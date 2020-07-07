@@ -210,6 +210,18 @@ namespace WpfApp4
 
         private void Button_OK(object sender, RoutedEventArgs e)
         {
+            if (password_text.Visibility == System.Windows.Visibility.Collapsed)
+            {
+                password_text.Text = password_box.Password.ToString();
+                password_text.Visibility = System.Windows.Visibility.Visible;
+                password_box.Visibility = System.Windows.Visibility.Collapsed;
+            }
+            else
+            {
+                password_box.Password = password_text.Text;
+                password_box.Visibility = System.Windows.Visibility.Visible;
+                password_text.Visibility = System.Windows.Visibility.Collapsed;
+            }
             succesfull = true;
             this.Close();
         }

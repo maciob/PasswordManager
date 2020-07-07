@@ -177,7 +177,7 @@ namespace WpfApp4
                     info.FileName = "cmd.exe";
                     info.RedirectStandardInput = true;
                     info.UseShellExecute = false;
-
+                    info.CreateNoWindow = true;
                     p.StartInfo = info;
                     p.Start();
 
