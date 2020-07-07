@@ -1,0 +1,13 @@
+﻿<Window x:Class="WpfApp4.Window2"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApp4"
+        mc:Ignorable="d"
+        Title="Window2" Height="110" Width="350" ResizeMode="NoResize">
+    <Grid>
+        <Label Content="You have entered your password or account name incorrectly. &#xD;&#xA;Please check your password and account name and try again." HorizontalAlignment="Left" Height="54" VerticalAlignment="Center" Width="334" Margin="0,0,0,17" RenderTransformOrigin="0.493,1"/>
+        <Button Content="OK" HorizontalAlignment="Left" Margin="130,45,0,0" VerticalAlignment="Top" Width="80" Click="Button_Click"/>
+    </Grid>
+</Window>

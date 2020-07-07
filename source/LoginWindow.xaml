@@ -1,0 +1,77 @@
+﻿<Window x:Class="WpfApp4.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApp4"
+        mc:Ignorable="d"
+        Title="Password Manager Login" Height="320" Width="425" ResizeMode="NoResize">
+    <Viewbox>
+        <DockPanel>
+            <Grid DockPanel.Dock="Right" Width="20">
+
+            </Grid>
+            <Grid DockPanel.Dock="Left" Width="20">
+
+            </Grid>
+            <Grid DockPanel.Dock="Bottom" Height="25">
+
+            </Grid>
+            <Grid DockPanel.Dock="Top" Height="25">
+
+            </Grid>
+            <Grid>
+                <Viewbox Height="270" Width="385">
+                    <DockPanel>
+                        <Grid DockPanel.Dock="Top" Height="180">
+                            <GroupBox Header="Sign In">
+                                <Grid>
+                                    <Viewbox>
+                                        <DockPanel>
+                                            <Grid DockPanel.Dock="Top" Height="135">
+                                                <Viewbox>
+                                                    <DockPanel>
+                                                        <Grid DockPanel.Dock="Top" Height="60">
+                                                            <Label Content="Account Name" HorizontalAlignment="Left" Height="30" Margin="0,0,0,0" VerticalAlignment="Center" Width="90"/>
+                                                            <TextBox HorizontalAlignment="Left" Height="30" Margin="100,0,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="280" Name="login_user"/>
+                                                        </Grid>
+                                                        <Grid DockPanel.Dock="Bottom" Height="60">
+                                                            <Label Content="Password" HorizontalAlignment="Left" Height="30" Margin="0,15" VerticalAlignment="Center" Width="60"/>
+                                                            <PasswordBox HorizontalAlignment="Left" Height="30" Margin="100,0,0,0" VerticalAlignment="Center" Width="280" Name="password_box" />
+                                                            <TextBox Name="password_text" HorizontalAlignment="Left" Height="30" Margin="100,0,0,0" VerticalAlignment="Center" Width="280"  Visibility="Collapsed" />
+                                                            <Button Content="Button" HorizontalAlignment="Left" Margin="355,20,0,0" VerticalAlignment="Top" Width="20" Height="20" Click="Button_Click"/>
+                                                        </Grid>
+                                                    </DockPanel>
+                                                </Viewbox>
+                                            </Grid>
+                                            <Grid DockPanel.Dock="Bottom" Height="60">
+                                                <Button Content="LOGIN" HorizontalAlignment="Left" Margin="113,0,0,0" VerticalAlignment="Center" Width="100" Height="30" Click="Button_Login"/>
+                                                <Button Content="CANCEL" HorizontalAlignment="Right" Margin="0,0,0,0" VerticalAlignment="Center" Width="100" Height="30" Click="Button_Cancel"/>
+                                            </Grid>
+                                        </DockPanel>
+                                    </Viewbox>
+                                </Grid>
+                            </GroupBox>
+                        </Grid>
+                        <Grid DockPanel.Dock="Bottom" Height="90" Width="385">
+                            <GroupBox>
+                                <Viewbox>
+                                    <DockPanel>
+                                        <Grid DockPanel.Dock="Top" Height="45" Width="385">
+                                            <Label Content="Need help with sign in?" HorizontalAlignment="Left" Height="26" Margin="0,0,0,0" VerticalAlignment="Center" Width="150"/>
+                                            <Button Content="HELP ME!" HorizontalAlignment="Right" Margin="0,0,0,0" VerticalAlignment="Center" Width="150" Height="30" Click="Button_No_Password"/>
+                                        </Grid>
+                                        <Grid DockPanel.Dock="Bottom" Height="45" Width="385">
+                                            <Label Content="Don't have an account?" HorizontalAlignment="Left" Height="26" Margin="0,0,0,0" VerticalAlignment="Center" Width="150"/>
+                                            <Button Content="CREATE A NEW ACCOUNT" HorizontalAlignment="Right" Margin="0,0,0,0" VerticalAlignment="Center" Width="150" Height="30" Click="Button_No_Account"/>
+                                        </Grid>
+                                    </DockPanel>
+                                </Viewbox>
+                            </GroupBox>
+                        </Grid>
+                    </DockPanel>
+                </Viewbox>
+            </Grid>
+        </DockPanel>
+    </Viewbox>
+</Window>
