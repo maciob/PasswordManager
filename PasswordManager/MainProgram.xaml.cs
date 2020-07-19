@@ -18,7 +18,6 @@ using System.Threading;
 using System.Diagnostics;
 using SQLite;
 
-
 namespace WpfApp4
 {
 
@@ -32,17 +31,18 @@ namespace WpfApp4
         int NumberFlag;
 
         public string login;
-        public string password;
+        PasswordBox password;
 
         public ObservableCollection <Website> Data { get; private set; } = new ObservableCollection<Website>();
 
-        public Window1(string file, string pass)
+        public Window1(string user, PasswordBox pass)
         {
             InitializeComponent();
             DataContext = this;
-            login = file;
+            login = user;
             password = pass;
             Read();
+            Console.WriteLine(password.Password.ToString());
         }
 
         ~Window1()
@@ -85,7 +85,7 @@ namespace WpfApp4
                 if (sw.BaseStream.CanWrite)
                 {
                     sw.WriteLine("sqlite3 " + login);
-                    sw.WriteLine("PRAGMA key = '" + password + "';");
+                    sw.WriteLine("PRAGMA key = '" + password.Password.ToString() + "';");
                     sw.WriteLine("SELECT * FROM Website;");
                     sw.WriteLine(".quit");
                 }
@@ -160,8 +160,9 @@ namespace WpfApp4
                 if (sw.BaseStream.CanWrite)
                 {
                     sw.WriteLine("sqlite3 " + login);
-                    sw.WriteLine("PRAGMA key = '" + password + "';");
-                    sw.WriteLine("INSERT INTO Website( Website_name , Website_address , Login , Password , Date ) VALUES('" + Name + "','" + WebsiteName + "','" + Login + "','" + new_password + "','" + date + "');");
+                    sw.WriteLine("PRAGMA key = '" + password.Password.ToString() + "';");
+                    sw.WriteLine("INSERT INTO Website( Website_name , Website_address , Login , Password , Date ) VALUES('{0}','{1}','{2}','{3}','{4}');", Name, WebsiteName, Login, new_password,date);
+
                     sw.WriteLine(".quit");
                 }
             }
@@ -187,7 +188,7 @@ namespace WpfApp4
                     if (sw.BaseStream.CanWrite)
                     {
                         sw.WriteLine("sqlite3 " + login);
-                        sw.WriteLine("PRAGMA key = '" + password + "';");
+                        sw.WriteLine("PRAGMA key = '" + password.Password.ToString() + "';");
                         sw.WriteLine("UPDATE Website SET Website_name = '{0}', Website_address = '{1}', Login = '{2}', Password = '{3}', Date = '{4}' WHERE ID = {5};", win5.Name_Of_Website.Text.ToString(), win5.Website.Text.ToString(), win5.Login.Text.ToString(), win5.password_box.Password.ToString(), DateTime.Today.ToString("d"), EditedAccount.ID);
                         sw.WriteLine(".quit");
                     }
