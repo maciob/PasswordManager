@@ -71,7 +71,7 @@ namespace WpfApp4
                         sw.WriteLine("SELECT * FROM Website;");
                     }
                 }
-                if (p.StandardError.ReadToEnd()!="")
+                if (p.StandardError.ReadToEnd() != "")
                 {
                     Window2 win2 = new Window2();
                     win2.ShowDialog();
@@ -83,6 +83,10 @@ namespace WpfApp4
                     win1.ShowDialog();
                     this.Close();
                 }
+            }
+            else
+            {
+
             }
         }
 

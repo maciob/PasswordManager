@@ -22,11 +22,12 @@ namespace WpfApp4
         public Window5()
         {
             InitializeComponent();
+            succesfull = false;
         }
 
         private RNGCryptoServiceProvider rngCsp = new RNGCryptoServiceProvider();
 
-        public bool succesfull = false;
+        public bool succesfull;
 
         public void Generate(int length, int lowercase, int uppercase, int special_char, int numbers)
         {
@@ -180,8 +181,7 @@ namespace WpfApp4
                     }
                 }
             }
-
-            if (((special_char == 1 && flag_Check_spec == true) || special_char == 0) && ((numbers == 1 && flag_Check_num == true) || numbers == 0) && ((lowercase == 1 && flag_Check_lower == true) || lowercase == 0) && ((uppercase == 1 && flag_Check_upper == true) || uppercase == 0))
+            if(((special_char == 1 && flag_Check_spec == true) || special_char == 0) && ((numbers == 1 && flag_Check_num == true) || numbers == 0) && ((lowercase == 1 && flag_Check_lower == true) || lowercase == 0) && ((uppercase == 1 && flag_Check_upper == true) || uppercase == 0))
                 return true;
             else
                 return false;
@@ -210,7 +210,7 @@ namespace WpfApp4
 
         private void Button_OK(object sender, RoutedEventArgs e)
         {
-            if (password_text.Visibility == System.Windows.Visibility.Collapsed)
+            if(password_text.Visibility == System.Windows.Visibility.Collapsed)
             {
                 password_text.Text = password_box.Password.ToString();
                 password_text.Visibility = System.Windows.Visibility.Visible;
@@ -225,6 +225,5 @@ namespace WpfApp4
             succesfull = true;
             this.Close();
         }
-
     }
 }

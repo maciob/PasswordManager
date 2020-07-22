@@ -181,8 +181,6 @@ namespace WpfApp4
             if (win5.succesfull == true)
             {
                 var con = Connect();
-
-
                 using (StreamWriter sw = con.StandardInput)
                 {
                     if (sw.BaseStream.CanWrite)
@@ -193,22 +191,26 @@ namespace WpfApp4
                         sw.WriteLine(".quit");
                     }
                 }
-
-                /*cmd.CommandText = "UPDATE Website SET Name = @Name, Website_Name = @Website_Name, Login = @Login, Password=@Password, Date = @Date WHERE ID = @ID";
-                cmd.Parameters.AddWithValue("@Name", win5.Name_Of_Website.Text);
-                cmd.Parameters.AddWithValue("@Website_Name", win5.Website.Text);
-                cmd.Parameters.AddWithValue("@Login", win5.Login.Text);
-                cmd.Parameters.AddWithValue("@Password", win5.password_text.Text);
-                cmd.Parameters.AddWithValue("@Date", DateTime.Today.ToString("d"));
-                cmd.Parameters.AddWithValue("@ID", EditedAccount.ID);
-                cmd.Prepare();*/
-                //cmd.ExecuteNonQuery();
                 Data.Clear();
                 Read();
             }
-
-    
         }
 
+        private void Delete_Data(int ID)
+        {
+            var con = Connect();
+            using (StreamWriter sw = con.StandardInput)
+            {
+                if (sw.BaseStream.CanWrite)
+                {
+                    sw.WriteLine("sqlite3 " + login);
+                    sw.WriteLine("PRAGMA key = '" + password.Password.ToString() + "';");
+                    sw.WriteLine("DELETE FROM Website WHERE ID = '" + ID + "';");
+                    sw.WriteLine(".quit");
+                }
+            }
+            Data.Clear();
+            Read();
+        }
     }
 }
