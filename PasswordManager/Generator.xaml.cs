@@ -16,7 +16,6 @@ using System.IO;
 
 namespace WpfApp4
 {
-
     public partial class Window5 : Window
     {
         public Window5()

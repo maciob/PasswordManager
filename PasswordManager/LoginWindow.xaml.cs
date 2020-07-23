@@ -15,12 +15,13 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Diagnostics;
 using SQLite;
+using MahApps.Metro.Controls;
 
 
 namespace WpfApp4
 {
 
-    public partial class MainWindow : Window
+    public partial class MainWindow : MetroWindow
     {
         public MainWindow()
         {

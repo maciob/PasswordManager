@@ -17,11 +17,12 @@ using System.ComponentModel;
 using System.Threading;
 using System.Diagnostics;
 using SQLite;
+using MahApps.Metro.Controls;
 
 namespace WpfApp4
 {
 
-    public partial class Window1 : Window
+    public partial class Window1 : MetroWindow
     {
 
         int Length;

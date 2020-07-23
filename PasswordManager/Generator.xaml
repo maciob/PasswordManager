@@ -6,8 +6,8 @@
         xmlns:local="clr-namespace:WpfApp4"
         mc:Ignorable="d"
         Title="Window5" Height="264" Width="400" ResizeMode="NoResize">
-    <Grid Margin="0,0,0,1">
-        <GroupBox Header="Password Generator" Margin="0,0,0,10">
+    <Grid Margin="0,0,0,0">
+        <GroupBox Header="Password Generator" Margin="0,0,0,0">
             <Grid>
                 <Label Content="Name of site" HorizontalAlignment="Left" Margin="10,15,0,0" VerticalAlignment="Top" Width="129" RenderTransformOrigin="0.515,-0.731"/>
                 <Label Content="Website" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" Width="129" RenderTransformOrigin="0.515,-0.731"/>
