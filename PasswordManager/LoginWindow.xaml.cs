@@ -18,7 +18,7 @@ using SQLite;
 using MahApps.Metro.Controls;
 
 
-namespace WpfApp4
+namespace PasswordManager
 {
 
     public partial class MainWindow : MetroWindow

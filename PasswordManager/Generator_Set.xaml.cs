@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace WpfApp4
+namespace PasswordManager
 {
     /// <summary>
     /// Logika interakcji dla klasy Window4.xaml

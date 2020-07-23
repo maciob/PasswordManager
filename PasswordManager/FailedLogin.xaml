@@ -1,9 +1,9 @@
-﻿<Window x:Class="WpfApp4.Window2"
+﻿<Window x:Class="PasswordManager.Window2"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WpfApp4"
+        xmlns:local="clr-namespace:PasswordManager"
         mc:Ignorable="d"
         Title="Window2" Height="110" Width="350" ResizeMode="NoResize">
     <Grid>

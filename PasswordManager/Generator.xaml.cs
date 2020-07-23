@@ -14,7 +14,7 @@ using System.Windows.Shapes;
 using System.Security.Cryptography;
 using System.IO;
 
-namespace WpfApp4
+namespace PasswordManager
 {
     public partial class Window5 : Window
     {
