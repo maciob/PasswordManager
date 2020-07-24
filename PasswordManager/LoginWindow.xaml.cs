@@ -42,10 +42,10 @@ namespace PasswordManager
 
         private void Button_Login(object sender, RoutedEventArgs e)
         {
-            if (File.Exists("temp.db"))
-            {
-                File.Delete("temp.db");
-            }
+            //if (File.Exists("temp.db"))
+            //{
+            //    File.Delete("temp.db");
+            //}
             if (password_text.Visibility != System.Windows.Visibility.Collapsed)
             {
                 password_box.Password = password_text.Text;

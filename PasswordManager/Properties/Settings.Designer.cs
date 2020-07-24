@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WpfApp4.Properties
+namespace PasswordManager.Properties
 {
 
 
