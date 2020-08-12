@@ -13,10 +13,11 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Security.Cryptography;
 using System.IO;
+using MahApps.Metro.Controls;
 
 namespace PasswordManager
 {
-    public partial class Window5 : Window
+    public partial class Window5 : MetroWindow
     {
         public Window5()
         {

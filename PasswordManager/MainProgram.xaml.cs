@@ -18,6 +18,7 @@ using System.Threading;
 using System.Diagnostics;
 using SQLite;
 using MahApps.Metro.Controls;
+using System.Windows.Threading;
 
 namespace PasswordManager
 {
@@ -30,9 +31,11 @@ namespace PasswordManager
         int UpperFlag;
         int SpecialFlag;
         int NumberFlag;
-
+        bool ClosingFlag = false;
         public string login;
         PasswordBox password;
+
+        Stopwatch LastInput = new Stopwatch();
 
         public ObservableCollection <Website> Data { get; private set; } = new ObservableCollection<Website>();
 
@@ -44,6 +47,23 @@ namespace PasswordManager
             password = pass;
             Read();
             Console.WriteLine(password.Password.ToString());
+
+            EventManager.RegisterClassHandler(typeof(Window), Window.PreviewMouseMoveEvent, new MouseEventHandler(OnPreviewMouseMove));
+            EventManager.RegisterClassHandler(typeof(Window), Window.PreviewKeyDownEvent, new KeyEventHandler(OnPreviewKeyDown));
+
+            LastInput.Start();
+
+            DispatcherTimer timer = new DispatcherTimer(DispatcherPriority.Send);
+            timer.Interval = TimeSpan.FromMilliseconds(1);
+            if (ClosingFlag == false)
+            {
+                timer.Tick += timer_Tick;
+                timer.Start();
+            }
+            else 
+            {
+                timer.Stop();
+            }
         }
 
         ~Window1()
@@ -212,6 +232,30 @@ namespace PasswordManager
             }
             Data.Clear();
             Read();
+        }
+
+        private void OnPreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            LastInput.Restart();
+        }
+
+        private void OnPreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            LastInput.Restart();
+        }
+        void timer_Tick(object sender, EventArgs e)
+        {
+            if (LastInput.Elapsed.TotalSeconds > 5)
+            {
+                LastInput.Stop();
+                ClosingFlag = true;
+                MainWindow login = new MainWindow();
+                foreach (var window in Application.Current.Windows)
+                {
+                    (window as Window).Hide();
+                }
+                login.ShowDialog();
+            }
         }
     }
 }

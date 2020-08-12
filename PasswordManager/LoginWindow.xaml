@@ -11,7 +11,7 @@
         <Viewbox>
             <DockPanel>
                 <Grid>
-                    <Viewbox Height="270" Width="385">
+                    <Viewbox>
                         <DockPanel>
                             <Grid DockPanel.Dock="Top" Height="180">
                                 <GroupBox Header="Sign In">

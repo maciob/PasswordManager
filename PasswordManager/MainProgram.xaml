@@ -15,11 +15,12 @@
                         <Grid>
                             <Button Content="Settings" HorizontalAlignment="Left" Margin="62.5,-40,0,0" VerticalAlignment="Center" Width="75" Height="26" Click="Button_Gen_Set"/>
                             <Button Content="Generate" HorizontalAlignment="Left" Margin="62.5,40,0,0" VerticalAlignment="Center" Width="75" Height="26" Click="Button_Generate"/>
+                            <Label Name="lblTime" FontSize="48" HorizontalAlignment="Center" VerticalAlignment="Center" Height="61" Margin="0,317,0,41" Width="190" RenderTransformOrigin="-2.573,1.668" />
                         </Grid>
                     </GroupBox>
                 </Grid>
                 <Grid DockPanel.Dock="Left" Width="200">
-                
+
                 </Grid>
                 <DataGrid Name="DataGrid" AutoGenerateColumns="False" Height="450" Width="400" ItemsSource="{Binding Path=Data}" CanUserAddRows="False" IsReadOnly="True" CanUserSortColumns="False" MouseDoubleClick="Edit_Click" CanUserResizeColumns="False">
                     <DataGrid.Columns>

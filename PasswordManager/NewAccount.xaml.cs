@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MahApps.Metro.Controls;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,7 +18,7 @@ namespace PasswordManager
     /// <summary>
     /// Logika interakcji dla klasy Window6.xaml
     /// </summary>
-    public partial class Window6 : Window
+    public partial class Window6 : MetroWindow
     {
         public bool succesfull = false;
 
