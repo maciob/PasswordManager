@@ -8,10 +8,10 @@
         mc:Ignorable="d"
         Title="Window5" Height="264" Width="400" ResizeMode="NoResize">
     <Grid Margin="0,0,0,0">
-        <GroupBox Header="Password Generator" Margin="0,0,0,0">
+        <GroupBox Margin="0,0,0,0">
             <Grid>
                 <Label Content="Name of site" HorizontalAlignment="Left" Margin="10,15,0,0" VerticalAlignment="Top" Width="129" RenderTransformOrigin="0.515,-0.731"/>
-                <Label Content="Website" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" Width="129" RenderTransformOrigin="0.515,-0.731"/>
+                <Label Content="URL" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" Width="129" RenderTransformOrigin="0.515,-0.731"/>
                 <Label Content="Your Login" HorizontalAlignment="Left" Margin="10,85,0,0" VerticalAlignment="Top" Width="129" RenderTransformOrigin="0.515,-0.731"/>
                 <Label Content="Your password" HorizontalAlignment="Left" Margin="10,120,0,0" VerticalAlignment="Top" Width="129" RenderTransformOrigin="0.478,0.346"/>
                 <TextBox HorizontalAlignment="Left" Height="23" Margin="139,15,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="152" RenderTransformOrigin="0.487,-0.304" Name="Name_Of_Website"/>
@@ -20,13 +20,9 @@
                 <TextBox HorizontalAlignment="Left" Height="23" Margin="139,120,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="152" RenderTransformOrigin="0.48,2.957" Name="password_text" Visibility="Collapsed"/>
                 <PasswordBox HorizontalAlignment="Left" Height="23" Margin="139,120,0,0" VerticalAlignment="Top" Width="152" RenderTransformOrigin="0.48,2.957" Name="password_box"/>
                 <Button Content="Show" HorizontalAlignment="Left" Margin="297,121,0,0" VerticalAlignment="Top" Width="75" Height="23" Click="Button_Show"/>
-                
-                
-            
             </Grid>
         </GroupBox>
         <Button Content="OK" HorizontalAlignment="Left" Margin="40,184,0,0" VerticalAlignment="Top" Width="75" Click="Button_OK"/>
         <Button Content="Cancel" HorizontalAlignment="Right" Margin="0,184,41,0" VerticalAlignment="Top" Width="75" Click="Button_Cancel"/>
-
     </Grid>
 </mah:MetroWindow>

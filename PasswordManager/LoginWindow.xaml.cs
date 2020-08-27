@@ -27,10 +27,10 @@ namespace PasswordManager
         {
             InitializeComponent();
         }
+        ~MainWindow()
+        {
 
-
-
-
+        }
         public class Website
         {
             [PrimaryKey, AutoIncrement]
@@ -78,19 +78,25 @@ namespace PasswordManager
                 if (p.StandardError.ReadToEnd() != "")
                 {
                     Window2 win2 = new Window2();
+                    win2.Error.Content = "You have entered your password or account name incorrectly.\nPlease check your password and account name and try again.";
                     win2.ShowDialog();
                 }
                 else
                 {
-                    this.Hide();
+                    this.Visibility = Visibility.Collapsed;
                     Window1 win1 = new Window1(login_user.Text + ".db", password_box);
                     win1.ShowDialog();
-                    this.Close();
+                    this.login_user.Text = "";
+                    this.password_box.Clear();
+                    this.password_text.Text = "";
+                    this.Visibility = Visibility.Visible;
                 }
             }
             else
             {
-
+                Window2 win2 = new Window2();
+                win2.Error.Content = "You have entered your password or account name incorrectly.\nPlease check your password and account name and try again.";
+                win2.ShowDialog();
             }
         }
 
@@ -99,9 +105,10 @@ namespace PasswordManager
             this.Close();
         }
 
-        private void Button_No_Password(object sender, RoutedEventArgs e)
+        private void Button_ImportAccount(object sender, RoutedEventArgs e)
         {
-
+            Window7 win7 = new Window7();
+            win7.ShowDialog();
         }
 
         private void Button_No_Account(object sender, RoutedEventArgs e)
@@ -110,16 +117,16 @@ namespace PasswordManager
             win6.ShowDialog();
             if (win6.succesfull == true)
             {
-                Console.WriteLine(File.Exists(win6.Login.Text+".db"));
-                if (File.Exists(win6.Login.Text+".db"))
+                Console.WriteLine(File.Exists(win6.Login.Text + ".db"));
+                if (File.Exists(win6.Login.Text + ".db"))
                 {
-                    
+
                 }
                 else
                 {
                     var db = new SQLiteConnection("temp.db");
                     db.CreateTable<Website>();
-                    
+
                     Process p = new Process();
                     ProcessStartInfo info = new ProcessStartInfo();
                     info.FileName = "cmd.exe";

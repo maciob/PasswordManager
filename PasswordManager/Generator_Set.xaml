@@ -10,15 +10,15 @@
     <Grid>
         <GroupBox Header="Settings of password generator">
             <Grid>
-                <TextBox HorizontalAlignment="Left" Height="24" Margin="130,16,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" Name="Num_char"/>
+                <TextBox  HorizontalAlignment="Left" Height="24" Margin="130,16,0,0" TextWrapping="Wrap" Text="16" VerticalAlignment="Top" Width="120" Name="Num_char"/>
                 <Label Content="Number of characters" HorizontalAlignment="Left" Height="24" Margin="0,16,0,0" VerticalAlignment="Top" Width="130" />
-                <CheckBox Content="" HorizontalAlignment="Left" Margin="180,56,0,0" VerticalAlignment="Top" Name="Flag_lower"/>
+                <CheckBox IsChecked="True" Content="" HorizontalAlignment="Left" Margin="180,56,0,0" VerticalAlignment="Top" Name="Flag_lower"/>
                 <Label Content="Lowercase characters" HorizontalAlignment="Left" Height="24" Margin="0,50,0,0" VerticalAlignment="Top" Width="130"/>
-                <CheckBox Content="" HorizontalAlignment="Left" Margin="180,91,0,0" VerticalAlignment="Top" Name="Flag_upper"/>
+                <CheckBox IsChecked="True" Content="" HorizontalAlignment="Left" Margin="180,91,0,0" VerticalAlignment="Top" Name="Flag_upper"/>
                 <Label Content="Uppercase characters" HorizontalAlignment="Left" Height="24" Margin="0,85,0,0" VerticalAlignment="Top" Width="130"/>
-                <CheckBox Content="" HorizontalAlignment="Left" Margin="180,126,0,0" VerticalAlignment="Top" Name="Flag_spec"/>
+                <CheckBox IsChecked="True" Content="" HorizontalAlignment="Left" Margin="180,126,0,0" VerticalAlignment="Top" Name="Flag_spec"/>
                 <Label Content="Special characters" HorizontalAlignment="Left" Height="24" Margin="0,120,0,0" VerticalAlignment="Top" Width="130"/>
-                <CheckBox Content="" HorizontalAlignment="Left" Margin="180,161,0,0" VerticalAlignment="Top" Name="Flag_num"/>
+                <CheckBox IsChecked="True" Content="" HorizontalAlignment="Left" Margin="180,161,0,0" VerticalAlignment="Top" Name="Flag_num"/>
                 <Label Content="Numbers" HorizontalAlignment="Left" Height="24" Margin="0,155,0,0" VerticalAlignment="Top" Width="130"/>
                 <Button Content="OK" HorizontalAlignment="Left" Margin="35,208,0,0" VerticalAlignment="Top" Width="75" Click="Button_OK"/>
                 <Button Content="Cancel" HorizontalAlignment="Right" Margin="0,208,35,0" VerticalAlignment="Top" Width="75" Click="Button_Cancel"/>

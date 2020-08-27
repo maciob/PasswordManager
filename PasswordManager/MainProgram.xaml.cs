@@ -19,6 +19,7 @@ using System.Diagnostics;
 using SQLite;
 using MahApps.Metro.Controls;
 using System.Windows.Threading;
+using System.Windows.Navigation;
 
 namespace PasswordManager
 {
@@ -31,39 +32,43 @@ namespace PasswordManager
         int UpperFlag;
         int SpecialFlag;
         int NumberFlag;
-        bool ClosingFlag = false;
         public string login;
         PasswordBox password;
+        int time_ammount = 10;
 
-        Stopwatch LastInput = new Stopwatch();
+        TimeSpan time;
+        DispatcherTimer timer;
 
-        public ObservableCollection <Website> Data { get; private set; } = new ObservableCollection<Website>();
+        public ObservableCollection<Website> Data { get; private set; } = new ObservableCollection<Website>();
 
         public Window1(string user, PasswordBox pass)
         {
             InitializeComponent();
             DataContext = this;
+            Single_Account.Visibility = Visibility.Hidden;
             login = user;
             password = pass;
             Read();
-            Console.WriteLine(password.Password.ToString());
-
+            Account.Content = login;
             EventManager.RegisterClassHandler(typeof(Window), Window.PreviewMouseMoveEvent, new MouseEventHandler(OnPreviewMouseMove));
             EventManager.RegisterClassHandler(typeof(Window), Window.PreviewKeyDownEvent, new KeyEventHandler(OnPreviewKeyDown));
 
-            LastInput.Start();
+            time = TimeSpan.FromSeconds(time_ammount);
 
-            DispatcherTimer timer = new DispatcherTimer(DispatcherPriority.Send);
-            timer.Interval = TimeSpan.FromMilliseconds(1);
-            if (ClosingFlag == false)
+            timer = new DispatcherTimer(new TimeSpan(0, 0, 1), DispatcherPriority.Normal, delegate
             {
-                timer.Tick += timer_Tick;
-                timer.Start();
-            }
-            else 
-            {
-                timer.Stop();
-            }
+                TimeLeft.Text = "    Time until the end of session: " + time.ToString("c");
+                if (time == TimeSpan.Zero)
+                {
+                    timer.Stop();
+                    foreach (var window in Application.Current.Windows)
+                    {
+                        if (!(window is MainWindow))
+                            (window as Window).Close();
+                    }
+                }
+                time = time.Add(TimeSpan.FromSeconds(-1));
+            }, Application.Current.Dispatcher);
         }
 
         ~Window1()
@@ -114,11 +119,11 @@ namespace PasswordManager
 
             string result = con.StandardOutput.ReadToEnd();
             var Lines = result.Split('\n');
-            foreach(var line in Lines)
+            foreach (var line in Lines)
             {
                 Console.WriteLine(line);
                 var s = line.Split('|');
-                if (Char.IsNumber(s[0],0))
+                if (Char.IsNumber(s[0], 0))
                 {
                     var element = new Website
                     {
@@ -163,17 +168,25 @@ namespace PasswordManager
         private void Button_Generate(object sender, RoutedEventArgs e)
         {
             Window5 win5 = new Window5();
+            if (Length == 0)
+            {
+                Length = 16;
+                LowerFlag = 1;
+                UpperFlag = 1;
+                SpecialFlag = 1;
+                NumberFlag = 1;
+            }
             win5.Generate(Length, LowerFlag, UpperFlag, SpecialFlag, NumberFlag);
             win5.ShowDialog();
             if (win5.succesfull)
             {
-                Add(win5.Name_Of_Website.Text.ToString(), win5.Website.Text.ToString(), win5.Login.Text.ToString(), win5.password_box.Password.ToString() , DateTime.Today.ToString("d"));
+                Add(win5.Name_Of_Website.Text.ToString(), win5.Website.Text.ToString(), win5.Login.Text.ToString(), win5.password_box.Password.ToString(), DateTime.Today.ToString("d"));
             }
             Data.Clear();
             Read();
         }
 
-        private void Add(string Name,string WebsiteName, string Login,string new_password,string date)
+        private void Add(string Name, string WebsiteName, string Login, string new_password, string date)
         {
             var con = Connect();
             using (StreamWriter sw = con.StandardInput)
@@ -182,14 +195,13 @@ namespace PasswordManager
                 {
                     sw.WriteLine("sqlite3 " + login);
                     sw.WriteLine("PRAGMA key = '" + password.Password.ToString() + "';");
-                    sw.WriteLine("INSERT INTO Website( Website_name , Website_address , Login , Password , Date ) VALUES('{0}','{1}','{2}','{3}','{4}');", Name, WebsiteName, Login, new_password,date);
+                    sw.WriteLine("INSERT INTO Website( Website_name , Website_address , Login , Password , Date ) VALUES('{0}','{1}','{2}','{3}','{4}');", Name, WebsiteName, Login, new_password, date);
 
                     sw.WriteLine(".quit");
                 }
             }
         }
-
-        private void Edit_Click(object sender, RoutedEventArgs e)
+        private void Edit(object sender, RoutedEventArgs e)
         {
             Window5 win5 = new Window5();
             Website EditedAccount = (Website)DataGrid.SelectedItem;
@@ -216,7 +228,36 @@ namespace PasswordManager
                 Read();
             }
         }
+        private void Edit_Click(object sender, RoutedEventArgs e)
+        {
+            PasswordBox.Visibility = Visibility.Visible;
+            PasswordText.Visibility = Visibility.Hidden;
+            Single_Account.Visibility = Visibility.Visible;
+            Website EditedAccount = (Website)DataGrid.SelectedItem;
+            PasswordBox SinglePassword = new PasswordBox();
+            SinglePassword.Password = EditedAccount.Password;
+            Single_Account.Header = EditedAccount.Website_name;
+            Your_Name.Content = EditedAccount.Website_name;
+            Login.Content = EditedAccount.Login;
+            PasswordText.Content = SinglePassword.Password;
+            PasswordBox.Content = "********";
 
+            if (EditedAccount.Website_address.Contains("://"))
+            {
+                hyperlink.NavigateUri = new Uri(EditedAccount.Website_address);
+            }
+            else
+            {
+                hyperlink.NavigateUri = new Uri("http://" + EditedAccount.Website_address);
+            }
+            URL2.Content = EditedAccount.Website_address;
+            Date.Content = EditedAccount.Date;
+        }
+        private void Delete(object sender, RoutedEventArgs e)
+        {
+            Website EditedAccount = (Website)DataGrid.SelectedItem;
+            Delete_Data(EditedAccount.ID);
+        }
         private void Delete_Data(int ID)
         {
             var con = Connect();
@@ -236,26 +277,61 @@ namespace PasswordManager
 
         private void OnPreviewMouseMove(object sender, MouseEventArgs e)
         {
-            LastInput.Restart();
+            timer.Stop();
+            time = TimeSpan.FromSeconds(time_ammount);
+            timer.Start();
         }
 
         private void OnPreviewKeyDown(object sender, KeyEventArgs e)
         {
-            LastInput.Restart();
+            timer.Stop();
+            time = TimeSpan.FromSeconds(time_ammount);
+            timer.Start();
         }
-        void timer_Tick(object sender, EventArgs e)
+
+        private void Hyperlink(object sender, RequestNavigateEventArgs e)
         {
-            if (LastInput.Elapsed.TotalSeconds > 5)
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            e.Handled = true;
+        }
+
+        private void Show_Click(object sender, RoutedEventArgs e)
+        {
+            if (PasswordText.Visibility == System.Windows.Visibility.Hidden)
             {
-                LastInput.Stop();
-                ClosingFlag = true;
-                MainWindow login = new MainWindow();
-                foreach (var window in Application.Current.Windows)
-                {
-                    (window as Window).Hide();
-                }
-                login.ShowDialog();
+                PasswordText.Visibility = System.Windows.Visibility.Visible;
+                PasswordBox.Visibility = System.Windows.Visibility.Hidden;
             }
+            else
+            {
+                PasswordBox.Visibility = System.Windows.Visibility.Visible;
+                PasswordBox.Content = "********";
+                PasswordText.Visibility = System.Windows.Visibility.Hidden;
+            }
+        }
+
+        private void ShareDatabase_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+
+        private void AccountSettings_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void NewAccount_Click(object sender, RoutedEventArgs e)
+        {
+            Window5 win5 = new Window5();
+            win5.Title = "New Account";
+            win5.ShowDialog();
+            if (win5.succesfull)
+            {
+                Add(win5.Name_Of_Website.Text.ToString(), win5.Website.Text.ToString(), win5.Login.Text.ToString(), win5.password_box.Password.ToString(), DateTime.Today.ToString("d"));
+            }
+            Data.Clear();
+            Read();
         }
     }
 }

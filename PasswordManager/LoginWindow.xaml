@@ -44,12 +44,12 @@
                                 </GroupBox>
                             </Grid>
                             <Grid DockPanel.Dock="Bottom" Height="100" Width="385">
-                                <GroupBox Header="Other stuff">
+                                <GroupBox Header="Creating new accounts">
                                     <Viewbox>
                                         <DockPanel>
                                             <Grid DockPanel.Dock="Top" Height="45" Width="385">
-                                                <Label Content="Need help with sign in?" HorizontalAlignment="Left" Height="26" Margin="0,0,0,0" VerticalAlignment="Center" Width="150"/>
-                                                <Button Content="HELP ME!" HorizontalAlignment="Right" Margin="0,0,0,0" VerticalAlignment="Center" Width="150" Height="30" Click="Button_No_Password"/>
+                                                <Label Content="Do you want to import account?" HorizontalAlignment="Left" Height="26" Margin="0,10,0,9" VerticalAlignment="Center" Width="183"/>
+                                                <Button Content="IMPORT ACCOUNT" HorizontalAlignment="Right" Margin="0,0,0,0" VerticalAlignment="Center" Width="150" Height="30" Click="Button_ImportAccount"/>
                                             </Grid>
                                             <Grid DockPanel.Dock="Bottom" Height="45" Width="385">
                                                 <Label Content="Don't have an account?" HorizontalAlignment="Left" Height="26" Margin="0,0,0,0" VerticalAlignment="Center" Width="150"/>

@@ -6,31 +6,48 @@
         xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:local="clr-namespace:PasswordManager"
         mc:Ignorable="d"
-        Title="Window1" Height="450" Width="750" ResizeMode="NoResize">
+        Title="Password Manager" Height="450" Width="750" ResizeMode="NoResize">
     <Grid>
-        <Viewbox Name="Viewbox">
-            <DockPanel>
-                <Grid DockPanel.Dock="Right" Width="200">
-                    <GroupBox Header="Password Generator">
-                        <Grid>
-                            <Button Content="Settings" HorizontalAlignment="Left" Margin="62.5,-40,0,0" VerticalAlignment="Center" Width="75" Height="26" Click="Button_Gen_Set"/>
-                            <Button Content="Generate" HorizontalAlignment="Left" Margin="62.5,40,0,0" VerticalAlignment="Center" Width="75" Height="26" Click="Button_Generate"/>
-                            <Label Name="lblTime" FontSize="48" HorizontalAlignment="Center" VerticalAlignment="Center" Height="61" Margin="0,317,0,41" Width="190" RenderTransformOrigin="-2.573,1.668" />
-                        </Grid>
-                    </GroupBox>
-                </Grid>
-                <Grid DockPanel.Dock="Left" Width="200">
+        <Grid DockPanel.Dock="Left" Width="400" Margin="350,0,0,0">
+            <GroupBox Name="Single_Account" Margin="0,0,0,40">
+                <Grid Name="Edit_Clicked">
+                    <Label Content="Your Name" HorizontalAlignment="Left" Margin="30,50,0,0" VerticalAlignment="Top" Width="109"/>
+                    <Label Content="Login" HorizontalAlignment="Left" Margin="30,100,0,0" VerticalAlignment="Top" Width="109"/>
+                    <Label Content="Password" HorizontalAlignment="Left" Margin="30,150,0,0" VerticalAlignment="Top" Width="109"/>
+                    <Label Content="URL" HorizontalAlignment="Left" Margin="30,200,0,0" VerticalAlignment="Top" Width="109"/>
+                    <Label Content="Date" HorizontalAlignment="Left" Margin="30,250,0,0" VerticalAlignment="Top" Width="109"/>
+                    <Button Content="Edit" HorizontalAlignment="Left" Margin="87,299,0,0" VerticalAlignment="Top" Width="75" Click="Edit"/>
+                    <Button Content="Delete" HorizontalAlignment="Left" Margin="231,299,0,0" VerticalAlignment="Top" Width="75" Click="Delete"/>
+                    <Label Name="Your_Name" HorizontalAlignment="Left" Margin="144,50,0,0" VerticalAlignment="Top" Width="109"/>
+                    <Label Name="Login" HorizontalAlignment="Left" Margin="144,100,0,0" VerticalAlignment="Top" Width="109"/>
+                    <Label Name="PasswordText" HorizontalAlignment="Left" Margin="144,150,0,0" VerticalAlignment="Top" Width="109"/>
+                    <Label Name="PasswordBox" HorizontalAlignment="Left" Margin="144,150,0,0" VerticalAlignment="Top" Width="109"/>
+                    <TextBlock Name="URL" Margin="144,200,84,112" TextWrapping="Wrap" RenderTransformOrigin="0.48,1.808">
+                        <Hyperlink Name="hyperlink" RequestNavigate="Hyperlink"><Label Name="URL2" Height="30" Width="105"></Label></Hyperlink>
+                    </TextBlock>
+                    <Label Name="Date" HorizontalAlignment="Left" Margin="144,250,0,0" VerticalAlignment="Top" Width="109"/>
+                    <Button Content="Show" HorizontalAlignment="Left" Margin="288,150,0,0" VerticalAlignment="Top" Width="75" Click="Show_Click"/>
 
                 </Grid>
-                <DataGrid Name="DataGrid" AutoGenerateColumns="False" Height="450" Width="400" ItemsSource="{Binding Path=Data}" CanUserAddRows="False" IsReadOnly="True" CanUserSortColumns="False" MouseDoubleClick="Edit_Click" CanUserResizeColumns="False">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="" Width="50"/>
-                        <DataGridTextColumn Header="" Binding="{Binding Path=Website_name}" Width="150"/>
-                        <DataGridTextColumn Header="" Width="95"/>
-                        <DataGridTextColumn Header="" Width="95"/>
-                    </DataGrid.Columns>
-                </DataGrid>
-            </DockPanel>
-        </Viewbox>
+            </GroupBox>
+            <TextBlock Name="TimeLeft" HorizontalAlignment="Left" Margin="0,386,0,0" VerticalAlignment="Top" Height="25" Width="250"/>
+        </Grid>
+        <Grid Margin="0,0,594,0">
+            <GroupBox Header="Settings"/>
+            <Grid>
+                <Button Content="Account Settings" HorizontalAlignment="Left" Margin="0,145,0,0" VerticalAlignment="Top" Width="150" Click="AccountSettings_Click"/>
+                <Button Content="SHARE DATABASE" HorizontalAlignment="Left" Margin="0,172,0,0" VerticalAlignment="Top" Width="150" Click="ShareDatabase_Click"/>
+                <Label Name="Account" HorizontalAlignment="Left" Margin="55,114,0,0" VerticalAlignment="Top"/>
+                <Button Content="ADD NEW ACCOUNT" HorizontalAlignment="Left" Margin="0,199,0,0" VerticalAlignment="Top" Width="150" Click="NewAccount_Click"/>
+                <Button Content="PASSWORD GENERATOR" HorizontalAlignment="Left" Margin="0,226,0,0" VerticalAlignment="Top" Width="150" Click="Button_Gen_Set"/>
+                <Button Content="GENERATE NEW PASSWORD" HorizontalAlignment="Left" Margin="0,253,0,0" VerticalAlignment="Top" Width="150" Click="Button_Generate"/>
+            </Grid>
+        </Grid>
+        <DataGrid Name="DataGrid" AutoGenerateColumns="False" ItemsSource="{Binding Path=Data}" CanUserAddRows="False" IsReadOnly="True" CanUserSortColumns="False" MouseDoubleClick="Edit_Click" DataGridCell.Selected="Edit_Click" CanUserResizeColumns="False" Margin="150,0,394,0">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="" Width="50"/>
+                <DataGridTextColumn Header="" Binding="{Binding Path=Website_name}" Width="150"/>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </mah:MetroWindow>

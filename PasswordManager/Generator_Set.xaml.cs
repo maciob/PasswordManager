@@ -38,7 +38,6 @@ namespace PasswordManager
         {
             succesfull = false;
             this.Close();
-        }      
-
+        }
     }
 }

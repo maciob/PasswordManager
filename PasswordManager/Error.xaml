@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="Window2" Height="110" Width="350" ResizeMode="NoResize">
     <Grid>
-        <Label Content="You have entered your password or account name incorrectly. &#xD;&#xA;Please check your password and account name and try again." HorizontalAlignment="Left" Height="54" VerticalAlignment="Center" Width="334" Margin="0,0,0,17" RenderTransformOrigin="0.493,1"/>
+        <Label Name="Error" HorizontalAlignment="Left" Height="54" VerticalAlignment="Center" Width="344" Margin="0,5,0,22" RenderTransformOrigin="0.493,1"/>
         <Button Content="OK" HorizontalAlignment="Left" Margin="130,45,0,0" VerticalAlignment="Top" Width="80" Click="Button_Click"/>
     </Grid>
 </Window>

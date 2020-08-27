@@ -57,7 +57,7 @@ namespace PasswordManager
                     }
                 }
             }
-            while (!Check(results,lowercase,uppercase,numbers,special_char));
+            while (!Check(results, lowercase, uppercase, numbers, special_char));
             this.password_box.Password = results;
             rngCsp.Dispose();
             Console.ReadLine();
@@ -181,7 +181,7 @@ namespace PasswordManager
                     }
                 }
             }
-            if(((special_char == 1 && flag_Check_spec == true) || special_char == 0) && ((numbers == 1 && flag_Check_num == true) || numbers == 0) && ((lowercase == 1 && flag_Check_lower == true) || lowercase == 0) && ((uppercase == 1 && flag_Check_upper == true) || uppercase == 0))
+            if (((special_char == 1 && flag_Check_spec == true) || special_char == 0) && ((numbers == 1 && flag_Check_num == true) || numbers == 0) && ((lowercase == 1 && flag_Check_lower == true) || lowercase == 0) && ((uppercase == 1 && flag_Check_upper == true) || uppercase == 0))
                 return true;
             else
                 return false;
@@ -210,7 +210,7 @@ namespace PasswordManager
 
         private void Button_OK(object sender, RoutedEventArgs e)
         {
-            if(password_text.Visibility == System.Windows.Visibility.Collapsed)
+            if (password_text.Visibility == System.Windows.Visibility.Collapsed)
             {
                 password_text.Text = password_box.Password.ToString();
                 password_text.Visibility = System.Windows.Visibility.Visible;

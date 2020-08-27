@@ -6,7 +6,7 @@
         xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:local="clr-namespace:PasswordManager"
         mc:Ignorable="d"
-        Title="Window6" Height="192" Width="370" ResizeMode="NoResize">
+        Title="Account Creator" Height="192" Width="370" ResizeMode="NoResize">
     <Grid>
         <Label Content="Name" HorizontalAlignment="Left" Margin="25,21,0,0" VerticalAlignment="Top"/>
         <Label Content="Password" HorizontalAlignment="Left" Margin="25,62,0,0" VerticalAlignment="Top"/>
@@ -15,16 +15,6 @@
         <TextBox HorizontalAlignment="Left" Height="22" Margin="103,25,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="222" Name="Login"/>
         <TextBox HorizontalAlignment="Left" Height="23" Margin="103,65,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="222" Name="Password_Text" Visibility="Collapsed"/>
         <PasswordBox HorizontalAlignment="Left" Height="23" Margin="103,65,0,0" VerticalAlignment="Top" Width="222" Name="Password_Box"/>
-        <Button Content="Button" HorizontalAlignment="Left" Margin="306,59,0,0" VerticalAlignment="Top" Width="15" Height="3" RenderTransformOrigin="0.967,0.722" Click="Button_Click">
-            <Button.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform ScaleY="-1"/>
-                    <SkewTransform/>
-                    <RotateTransform/>
-                    <TranslateTransform/>
-                </TransformGroup>
-            </Button.RenderTransform>
-        </Button>
-
+        <Button Content="Button" Margin="296,65,43,0" VerticalAlignment="Top" Height="15" RenderTransformOrigin="0.967,0.722" Click="Button_Click"/>
     </Grid>
 </mah:MetroWindow>
