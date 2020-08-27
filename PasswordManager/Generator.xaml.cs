@@ -19,9 +19,23 @@ namespace PasswordManager
 {
     public partial class Window5 : MetroWindow
     {
-        public Window5()
+        int Length;
+        int Lowercase;
+        int Uppercase;
+        int Special_char;
+        int Numbers;
+        public Window5(int length, int lowercase, int uppercase, int special_char, int numbers,bool Generator)
         {
             InitializeComponent();
+            Length = length;
+            Lowercase = lowercase;
+            Uppercase = uppercase;
+            Special_char = special_char;
+            Numbers = numbers;
+            if (Generator == true)
+            {
+                password_box.Password = Generate();
+            }
             succesfull = false;
         }
 
@@ -29,25 +43,25 @@ namespace PasswordManager
 
         public bool succesfull;
 
-        public void Generate(int length, int lowercase, int uppercase, int special_char, int numbers)
+        public string Generate()
         {
-            int sum = lowercase + uppercase + special_char + numbers;
+            int sum = Lowercase + Uppercase + Special_char + Numbers;
             string results = "";
             do
             {
                 results = "";
-                for (int x = 0; x < length; x++)
+                for (int x = 0; x < Length; x++)
                 {
                     byte num = RandomNum((byte)sum);
-                    if (num == 1 && lowercase == 1)
+                    if (num == 1 && Lowercase == 1)
                     {
                         results = results + GetUniqueLower();
                     }
-                    else if (uppercase == 1 && ((lowercase == 1 && num == 2) || (lowercase == 0 && num == 1)))
+                    else if (Uppercase == 1 && ((Lowercase == 1 && num == 2) || (Lowercase == 0 && num == 1)))
                     {
                         results = results + GetUniqueUpper();
                     }
-                    else if (numbers == 1 && ((num == 3 && lowercase == 1 && uppercase == 1) || (num == 2 && ((lowercase == 1 && uppercase == 0) || (lowercase == 0 && uppercase == 1))) || num == 1))
+                    else if (Numbers == 1 && ((num == 3 && Lowercase == 1 && Uppercase == 1) || (num == 2 && ((Lowercase == 1 && Uppercase == 0) || (Lowercase == 0 && Uppercase == 1))) || num == 1))
                     {
                         results = results + GetUniqueNum();
                     }
@@ -57,10 +71,9 @@ namespace PasswordManager
                     }
                 }
             }
-            while (!Check(results, lowercase, uppercase, numbers, special_char));
-            this.password_box.Password = results;
+            while (!Check(results, Lowercase, Uppercase, Numbers, Special_char));
             rngCsp.Dispose();
-            Console.ReadLine();
+            return results;
         }
 
         private byte RandomNum(byte maxNum)

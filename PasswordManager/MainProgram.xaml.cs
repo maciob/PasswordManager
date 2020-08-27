@@ -34,7 +34,7 @@ namespace PasswordManager
         int NumberFlag;
         public string login;
         PasswordBox password;
-        int time_ammount = 10;
+        int time_ammount = 300;
 
         TimeSpan time;
         DispatcherTimer timer;
@@ -167,7 +167,6 @@ namespace PasswordManager
 
         private void Button_Generate(object sender, RoutedEventArgs e)
         {
-            Window5 win5 = new Window5();
             if (Length == 0)
             {
                 Length = 16;
@@ -176,7 +175,7 @@ namespace PasswordManager
                 SpecialFlag = 1;
                 NumberFlag = 1;
             }
-            win5.Generate(Length, LowerFlag, UpperFlag, SpecialFlag, NumberFlag);
+            Window5 win5 = new Window5(Length, LowerFlag, UpperFlag, SpecialFlag, NumberFlag, true);
             win5.ShowDialog();
             if (win5.succesfull)
             {
@@ -203,7 +202,7 @@ namespace PasswordManager
         }
         private void Edit(object sender, RoutedEventArgs e)
         {
-            Window5 win5 = new Window5();
+            Window5 win5 = new Window5(0,0,0,0,0,false);
             Website EditedAccount = (Website)DataGrid.SelectedItem;
             win5.Title = "Edit Account";
             win5.Name_Of_Website.Text = EditedAccount.Website_name;
@@ -312,7 +311,8 @@ namespace PasswordManager
 
         private void ShareDatabase_Click(object sender, RoutedEventArgs e)
         {
-
+            Window3 win3 = new Window3(login);
+            win3.ShowDialog();
         }
 
 
@@ -323,7 +323,7 @@ namespace PasswordManager
 
         private void NewAccount_Click(object sender, RoutedEventArgs e)
         {
-            Window5 win5 = new Window5();
+            Window5 win5 = new Window5(0,0,0,0,0,false);
             win5.Title = "New Account";
             win5.ShowDialog();
             if (win5.succesfull)
