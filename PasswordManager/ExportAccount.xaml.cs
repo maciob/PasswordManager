@@ -15,6 +15,7 @@ using System.Windows.Threading;
 using MahApps.Metro.Controls;
 using System.Net;
 using System.IO;
+using System.Threading;
 
 namespace PasswordManager
 {
@@ -28,6 +29,8 @@ namespace PasswordManager
         DispatcherTimer timer;
         int time_ammount = 60;
         bool deleteFlag = false;
+        string OneTimePassword;
+        Thread t;
         public Window3(string login)
         {
             InitializeComponent();
@@ -46,7 +49,8 @@ namespace PasswordManager
         private void Cancel() 
         {
             timer.Stop();
-            DeleteFile(OTP.Text + ".db");
+            t = new Thread(DeleteFile);
+            t.Start();
         }
 
 
@@ -54,17 +58,20 @@ namespace PasswordManager
         {
             if (OTP.Text != "") 
             {
-                DeleteFile(OTP + ".db");
+                timer.Stop();
+                OneTimePassword = OTP.Text + ".db";
+                t = new Thread(DeleteFile);
+                t.Start();
             }
             Window5 win5 = new Window5(10, 0, 1, 0, 1, true);
             OTP.Text = win5.Generate();
             win5.Close();
-            File.Copy(Login, OTP.Text + ".db");
-
+            OneTimePassword = OTP.Text + ".db";
+            File.Copy(Login, OneTimePassword);
             try
             {
                 WebClient client = new WebClient();
-                client.UploadFile("ftp://192.168.1.34/" + OTP.Text + ".db", OTP.Text + ".db"); //upload
+                client.UploadFile("ftp://192.168.1.34/" + OneTimePassword, OneTimePassword); //upload
             }
             catch (Exception ex)
             {
@@ -79,21 +86,22 @@ namespace PasswordManager
                 {
                     timer.Stop();
                     TimeLeft.Text = "OTP has expired.";
-                    DeleteFile(OTP.Text+ ".db");
+                    t = new Thread(DeleteFile);
+                    t.Start();
                 }
                 time = time.Add(TimeSpan.FromSeconds(-1));
             }, Application.Current.Dispatcher);
         }
-        private void DeleteFile(string OTP) 
+        private void DeleteFile() 
         {
             while (deleteFlag == false)
             {
-                if (File.Exists(OTP) && FileInUse(OTP)==false)
+                if (File.Exists(OneTimePassword) && FileInUse(OneTimePassword) ==false)
                 {
                     deleteFlag = true;
                     try
                     {
-                        File.Delete(OTP);
+                        File.Delete(OneTimePassword);
                     }
                     catch (Exception ex)
                     {
@@ -106,7 +114,7 @@ namespace PasswordManager
 
             try
             {
-                FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://192.168.1.34/" + OTP);//delete
+                FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://192.168.1.34/" + OneTimePassword);//delete
                 request.Method = WebRequestMethods.Ftp.DeleteFile;
                 FtpWebResponse response = (FtpWebResponse)request.GetResponse();
             }
@@ -117,10 +125,12 @@ namespace PasswordManager
         }
         private bool FileInUse(string path)
         {
+            
             try
             {
                 using (FileStream fs = new FileStream(path, FileMode.OpenOrCreate))
                 {
+                    fs.Close();
                 }
                 return false;
             }
