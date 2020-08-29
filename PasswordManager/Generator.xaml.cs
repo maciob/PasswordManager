@@ -41,7 +41,7 @@ namespace PasswordManager
 
         private RNGCryptoServiceProvider rngCsp = new RNGCryptoServiceProvider();
 
-        public bool succesfull;
+        public bool succesfull = false;
 
         public string Generate()
         {
