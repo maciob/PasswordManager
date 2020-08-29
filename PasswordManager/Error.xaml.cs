@@ -11,13 +11,13 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-
+using MahApps.Metro.Controls;
 namespace PasswordManager
 {
     /// <summary>
     /// Logika interakcji dla klasy Window2.xaml
     /// </summary>
-    public partial class Window2 : Window
+    public partial class Window2 : MetroWindow
     {
         public Window2()
         {

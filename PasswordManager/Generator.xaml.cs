@@ -145,7 +145,7 @@ namespace PasswordManager
             return result.ToString();
         }
 
-        private bool Check(string result, int lowercase, int uppercase, int numbers, int special_char)
+        public bool Check(string result, int lowercase, int uppercase, int numbers, int special_char)
         {
             bool flag_Check_spec = false;
             bool flag_Check_lower = false;

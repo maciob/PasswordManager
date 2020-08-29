@@ -29,8 +29,19 @@ namespace PasswordManager
 
         private void Button_Create_Account(object sender, RoutedEventArgs e)
         {
-            succesfull = true;
-            this.Close();
+            Window5 win5 = new Window5(0, 0, 0, 0, 0, false);
+            if (win5.Check(Password_Box.Password.ToString(), 1, 1, 1, 1) == true && Password_Box.Password.Length > 8)
+            {
+                succesfull = true;
+                this.Close();
+            }
+            else
+            {
+                Window2 win2 = new Window2();
+                win2.Error.Content = "Your password must consist: At least 8 characters and at least\none number, huge letter, small letter and special character.";
+                win2.ShowDialog();
+            }
+            win5.Close();
         }
 
         private void Button_Cancel(object sender, RoutedEventArgs e)
@@ -57,6 +68,5 @@ namespace PasswordManager
                 Password_Text.Visibility = System.Windows.Visibility.Collapsed;
             }
         }
-
     }
 }

@@ -11,10 +11,10 @@
         <Label Content="Name" HorizontalAlignment="Left" Margin="25,21,0,0" VerticalAlignment="Top"/>
         <Label Content="Password" HorizontalAlignment="Left" Margin="25,62,0,0" VerticalAlignment="Top"/>
         <Button Content="Create account" HorizontalAlignment="Left" Margin="103,114,0,0" VerticalAlignment="Top" Width="100" Click="Button_Create_Account"/>
-        <Button Content="Cancel" HorizontalAlignment="Left" Margin="235,114,0,0" VerticalAlignment="Top" Width="90" Click="Button_Cancel"/>
-        <TextBox HorizontalAlignment="Left" Height="22" Margin="103,25,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="222" Name="Login"/>
+        <Button Content="Cancel" HorizontalAlignment="Left" Margin="208,114,0,0" VerticalAlignment="Top" Width="90" Click="Button_Cancel"/>
+        <TextBox HorizontalAlignment="Left" Height="22" Margin="103,25,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="195" Name="Login"/>
         <TextBox HorizontalAlignment="Left" Height="23" Margin="103,65,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="222" Name="Password_Text" Visibility="Collapsed"/>
-        <PasswordBox HorizontalAlignment="Left" Height="23" Margin="103,65,0,0" VerticalAlignment="Top" Width="222" Name="Password_Box"/>
-        <Button Content="Button" Margin="296,65,43,0" VerticalAlignment="Top" Height="15" RenderTransformOrigin="0.967,0.722" Click="Button_Click"/>
+        <PasswordBox HorizontalAlignment="Left" Height="23" Margin="103,65,0,0" VerticalAlignment="Top" Width="195" Name="Password_Box"/>
+        <Button Content="Show" Margin="303,66,5,0" VerticalAlignment="Top" Height="15" RenderTransformOrigin="0.967,0.722" Click="Button_Click"/>
     </Grid>
 </mah:MetroWindow>

@@ -21,6 +21,8 @@ using MahApps.Metro.Controls;
 using System.Windows.Threading;
 using System.Windows.Navigation;
 using System.Web.UI.WebControls;
+using SharpVectors.Dom.Svg;
+
 namespace PasswordManager
 {
 
@@ -32,10 +34,13 @@ namespace PasswordManager
         int UpperFlag;
         int SpecialFlag;
         int NumberFlag;
+        
         public string login;
         PasswordBox password;
-        int time_ammount = 300;
 
+        bool changedFlag = false;
+
+        int time_ammount = 300;
         TimeSpan time;
         DispatcherTimer timer;
 
@@ -49,11 +54,15 @@ namespace PasswordManager
             login = user;
             password = pass;
             Read();
+
             string name = login;
             if (name.Contains("."))
             {
                 name = name.Remove(name.IndexOf("."), name.Length - name.IndexOf("."));
             }
+            Account.Content = name;
+
+            //Icon
             string directory = Directory.GetCurrentDirectory();
             string path = @"\brands\person.jpg";
             path = directory + path;
@@ -62,7 +71,8 @@ namespace PasswordManager
             bitmap.UriSource = new Uri(path);
             bitmap.EndInit();
             Person.Source = bitmap;
-            Account.Content = name;
+
+            //Timer and event handlers
             EventManager.RegisterClassHandler(typeof(Window), Window.PreviewMouseMoveEvent, new MouseEventHandler(OnPreviewMouseMove));
             EventManager.RegisterClassHandler(typeof(Window), Window.PreviewKeyDownEvent, new KeyEventHandler(OnPreviewKeyDown));
 
@@ -225,6 +235,7 @@ namespace PasswordManager
                 NumberFlag = 1;
             }
             Window5 win5 = new Window5(Length, LowerFlag, UpperFlag, SpecialFlag, NumberFlag, true);
+            win5.Title = "Generated Password";
             win5.ShowDialog();
             if (win5.succesfull==true)
             {
@@ -368,7 +379,107 @@ namespace PasswordManager
 
         private void AccountSettings_Click(object sender, RoutedEventArgs e)
         {
-
+            Window8 win8 = new Window8(login);
+            win8.ShowDialog();
+            if (win8.succesfull==true)  
+            {
+                if (win8.LoginChanged == true && win8.PasswordChanged == true) 
+                {
+                    changedFlag = false;
+                    while (changedFlag == false)
+                    {
+                        if (File.Exists(login) && FileInUse(login) == false)
+                        {
+                            changedFlag = true;
+                            try
+                            {
+                                File.Move(login, win8.LoginText.Text + ".db");
+                                login = win8.LoginText.Text + ".db";
+                                Account.Content = win8.LoginText.Text;
+                            }
+                            catch (Exception ex)
+                            {
+                            }
+                        }
+                    }
+                    changedFlag = false;
+                    while (changedFlag == false)
+                    {
+                        if (File.Exists(login) && FileInUse(login) == false)
+                        {
+                            changedFlag = true;
+                            try
+                            {
+                                var con = Connect();
+                                using (StreamWriter sw = con.StandardInput)
+                                {
+                                    if (sw.BaseStream.CanWrite)
+                                    {
+                                        sw.WriteLine("sqlite3 " + login);
+                                        sw.WriteLine("PRAGMA key = '" + password.Password.ToString() + "';");
+                                        sw.WriteLine("PRAGMA rekey = '" + win8.PasswordBox.Password.ToString() + "';");
+                                        sw.WriteLine(".quit");
+                                    }
+                                }
+                                password.Password = win8.PasswordBox.Password.ToString();
+                            }
+                            catch (Exception ex)
+                            {
+                            }
+                        }
+                    }
+                }
+                if (win8.LoginChanged == true && win8.PasswordChanged == false)
+                {
+                    changedFlag = false;
+                    while (changedFlag == false)
+                    {
+                        if (File.Exists(login) && FileInUse(login) == false)
+                        {
+                            changedFlag = true;
+                            try
+                            {
+                                File.Move(login, win8.LoginText.Text + ".db");
+                                login = win8.LoginText.Text + ".db";
+                                Account.Content = win8.LoginText.Text;
+                            }
+                            catch (Exception ex)
+                            {
+                            }
+                        }
+                    }
+                }
+                if (win8.LoginChanged == false && win8.PasswordChanged == true)
+                {
+                    changedFlag = false;
+                    while (changedFlag == false)
+                    {
+                        if (File.Exists(login) && FileInUse(login) == false)
+                        {
+                            Console.WriteLine(win8.PasswordBox.Password.ToString());
+                            changedFlag = true;
+                            try
+                            {
+                                var con = Connect();
+                                using (StreamWriter sw = con.StandardInput)
+                                {
+                                    if (sw.BaseStream.CanWrite)
+                                    {
+                                        sw.WriteLine("sqlite3 " + login);
+                                        sw.WriteLine("PRAGMA key = '" + password.Password.ToString() + "';");
+                                        sw.WriteLine("PRAGMA rekey = '" + win8.PasswordBox.Password.ToString() + "';");
+                                        sw.WriteLine(".quit");
+                                    }
+                                }
+                                password.Password = win8.PasswordBox.Password.ToString();
+                            }
+                            catch (Exception ex)
+                            {
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         private void NewAccount_Click(object sender, RoutedEventArgs e)
@@ -382,6 +493,26 @@ namespace PasswordManager
             }
             Data.Clear();
             Read();
+        }
+
+        private void Button_Logout(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+        private bool FileInUse(string path)
+        {
+            try
+            {
+                using (FileStream fs = new FileStream(path, FileMode.OpenOrCreate))
+                {
+                    fs.Close();
+                }
+                return false;
+            }
+            catch (IOException ex)
+            {
+                return true;
+            }
         }
     }
 }

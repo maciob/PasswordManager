@@ -37,14 +37,15 @@
             <Grid>
                 <Button Content="Account Settings" HorizontalAlignment="Left" Margin="0,145,0,0" VerticalAlignment="Top" Width="150" Click="AccountSettings_Click"/>
                 <Button Content="SHARE DATABASE" HorizontalAlignment="Left" Margin="0,172,0,0" VerticalAlignment="Top" Width="150" Click="ShareDatabase_Click"/>
-                <Label Name="Account" HorizontalAlignment="Center" Margin="0,120,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.4,-0.2" Width="150" Height="28"/>
+                <Label Name="Account" HorizontalContentAlignment="Center" Margin="0,120,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.4,-0.2" Width="150" Height="28"/>
                 <Button Content="ADD NEW ACCOUNT" HorizontalAlignment="Left" Margin="0,199,0,0" VerticalAlignment="Top" Width="150" Click="NewAccount_Click"/>
                 <Button Content="PASSWORD GENERATOR" HorizontalAlignment="Left" Margin="0,226,0,0" VerticalAlignment="Top" Width="150" Click="Button_Gen_Set"/>
                 <Button Content="GENERATE NEW PASSWORD" HorizontalAlignment="Left" Margin="0,253,0,0" VerticalAlignment="Top" Width="150" Click="Button_Generate"/>
                 <Image Name ="Person" Margin="25,27,25,294" Height="100" RenderTransformOrigin="0.5,0.685"/>
+                <Button Content="LOGOUT" HorizontalAlignment="Left" Margin="0,340,0,0" VerticalAlignment="Top" Width="150" Click="Button_Logout"/>
             </Grid>
         </Grid>
-        <DataGrid Name="DataGrid" AutoGenerateColumns="False" ItemsSource="{Binding Path=Data}" CanUserAddRows="False" IsReadOnly="True" CanUserSortColumns="False" MouseDoubleClick="Edit_Click" DataGridCell.Selected="Edit_Click" CanUserResizeColumns="True" Margin="150,0,394,0" RowHeight="30">
+        <DataGrid Name="DataGrid" AutoGenerateColumns="False" ItemsSource="{Binding Path=Data}" CanUserAddRows="False" IsReadOnly="True" CanUserSortColumns="False" MouseDoubleClick="Edit_Click" DataGridCell.Selected="Edit_Click" CanUserResizeColumns="False" Margin="150,0,394,0" RowHeight="30">
             <DataGrid.Columns>
                 <DataGridTemplateColumn>
                     <DataGridTemplateColumn.CellTemplate>
@@ -53,7 +54,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="" Binding="{Binding Path=Website_name}" Width="160"/>
+                <DataGridTextColumn Header="" Binding="{Binding Path=Website_name}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

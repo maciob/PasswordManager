@@ -48,11 +48,9 @@ namespace PasswordManager
 
         private void Cancel() 
         {
-            timer.Stop();
             t = new Thread(DeleteFile);
             t.Start();
         }
-
 
         private void Button_GenerateOTP(object sender, RoutedEventArgs e)
         {
@@ -98,6 +96,7 @@ namespace PasswordManager
             {
                 if (File.Exists(OneTimePassword) && FileInUse(OneTimePassword) ==false)
                 {
+                    timer.Stop();
                     deleteFlag = true;
                     try
                     {

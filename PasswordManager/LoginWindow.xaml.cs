@@ -45,7 +45,7 @@ namespace PasswordManager
 
         private void Button_Login(object sender, RoutedEventArgs e)
         {
-            if (File.Exists("temp.db"))
+            if (File.Exists("temp.db")&& FileInUse("temp.db")==false)
             {
                 File.Delete("temp.db");
             }
@@ -120,7 +120,9 @@ namespace PasswordManager
                 Console.WriteLine(File.Exists(win6.Login.Text + ".db"));
                 if (File.Exists(win6.Login.Text + ".db"))
                 {
-
+                    Window2 win2 = new Window2();
+                    win2.Error.Content = "Such a user already exist!";
+                    win2.ShowDialog();
                 }
                 else
                 {
@@ -164,6 +166,21 @@ namespace PasswordManager
                 password_box.Password = password_text.Text;
                 password_box.Visibility = System.Windows.Visibility.Visible;
                 password_text.Visibility = System.Windows.Visibility.Collapsed;
+            }
+        }
+        private bool FileInUse(string path)
+        {
+            try
+            {
+                using (FileStream fs = new FileStream(path, FileMode.OpenOrCreate))
+                {
+                    fs.Close();
+                }
+                return false;
+            }
+            catch (IOException ex)
+            {
+                return true;
             }
         }
     }

@@ -23,20 +23,20 @@
                                                         <DockPanel>
                                                             <Grid DockPanel.Dock="Top" Height="60">
                                                                 <Label Content="Account Name" HorizontalAlignment="Left" Height="30" Margin="0,0,0,0" VerticalAlignment="Center" Width="90"/>
-                                                                <TextBox HorizontalAlignment="Left" Height="30" Margin="100,0,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="280" Name="login_user"/>
+                                                                <TextBox HorizontalAlignment="Left" Height="30" Margin="100,15,0,15" TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="242" Name="login_user"/>
                                                             </Grid>
-                                                            <Grid DockPanel.Dock="Bottom" Height="60">
+                                                            <Grid DockPanel.Dock="Bottom" Height="60" Width="432">
                                                                 <Label Content="Password" HorizontalAlignment="Left" Height="30" Margin="0,15" VerticalAlignment="Center" Width="60"/>
-                                                                <PasswordBox HorizontalAlignment="Left" Height="30" Margin="100,0,0,0" VerticalAlignment="Center" Width="280" Name="password_box" />
-                                                                <TextBox Name="password_text" HorizontalAlignment="Left" Height="30" Margin="100,0,0,0" VerticalAlignment="Center" Width="280"  Visibility="Collapsed" />
-                                                                <Button Content="Button" HorizontalAlignment="Left" Margin="355,20,0,0" VerticalAlignment="Top" Width="20" Height="5" Click="Button_Click" RenderTransformOrigin="0.626,0.284"/>
+                                                                <PasswordBox HorizontalAlignment="Left" Height="30" Margin="100,15,0,15" VerticalAlignment="Center" Width="242" Name="password_box" />
+                                                                <TextBox Name="password_text" HorizontalAlignment="Left" Height="30" Margin="100,15,0,15" VerticalAlignment="Center" Width="242"  Visibility="Collapsed" />
+                                                                <Button Content="Show" HorizontalAlignment="Left" Margin="355,15,0,0" VerticalAlignment="Top" Width="67" Height="30" Click="Button_Click" RenderTransformOrigin="0.626,0.284"/>
                                                             </Grid>
                                                         </DockPanel>
                                                     </Viewbox>
                                                 </Grid>
                                                 <Grid DockPanel.Dock="Bottom" Height="60">
                                                     <Button Content="LOGIN" HorizontalAlignment="Left" Margin="113,0,0,0" VerticalAlignment="Center" Width="100" Height="30" Click="Button_Login"/>
-                                                    <Button Content="CANCEL" HorizontalAlignment="Right" Margin="0,0,0,0" VerticalAlignment="Center" Width="100" Height="30" Click="Button_Cancel"/>
+                                                    <Button Content="CANCEL" HorizontalAlignment="Right" Margin="0,15,104,15" VerticalAlignment="Center" Width="100" Height="30" Click="Button_Cancel"/>
                                                 </Grid>
                                             </DockPanel>
                                         </Viewbox>
