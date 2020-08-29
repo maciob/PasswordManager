@@ -53,6 +53,7 @@ namespace PasswordManager
                 {
                     error = true;
                     Window2 win2 = new Window2();
+                    win2.Title = "Error";
                     win2.Error.Content = "Your login must be different than original!";
                     win2.ShowDialog();
                 }
@@ -71,6 +72,7 @@ namespace PasswordManager
                 {
                     error = true;
                     Window2 win2 = new Window2();
+                    win2.Title = "Error";
                     win2.Error.Content = "Your password must consist: At least 8 characters and at least\none number, huge letter, small letter and special character.";
                     win2.ShowDialog();
                 }
@@ -80,6 +82,7 @@ namespace PasswordManager
             if (PasswordLabel.Visibility==Visibility.Visible && LoginLabel.Visibility == Visibility.Visible) 
             {
                 Window2 win2 = new Window2();
+                win2.Title = "Error";
                 win2.Error.Content = "Your did not changed anything.";
                 win2.ShowDialog();
                 error = true;

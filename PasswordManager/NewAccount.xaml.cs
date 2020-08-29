@@ -32,12 +32,25 @@ namespace PasswordManager
             Window5 win5 = new Window5(0, 0, 0, 0, 0, false);
             if (win5.Check(Password_Box.Password.ToString(), 1, 1, 1, 1) == true && Password_Box.Password.Length > 8)
             {
-                succesfull = true;
-                this.Close();
+                if (win5.Login.Text.Length < 5)
+                {
+                    Window2 win2 = new Window2();
+                    win2.Title = "Error";
+                    win2.Error.Content = "Your account name must be at least 5 characters long.";
+                    win2.ShowDialog();
+                }
+                else 
+                {
+                    succesfull = true;
+                    win5.Close();
+                    this.Close();
+                }
+                win5.Close();
             }
             else
             {
                 Window2 win2 = new Window2();
+                win2.Title = "Error";
                 win2.Error.Content = "Your password must consist: At least 8 characters and at least\none number, huge letter, small letter and special character.";
                 win2.ShowDialog();
             }

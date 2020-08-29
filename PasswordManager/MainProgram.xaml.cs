@@ -262,63 +262,88 @@ namespace PasswordManager
         }
         private void Edit(object sender, RoutedEventArgs e)
         {
-            Window5 win5 = new Window5(0,0,0,0,0,false);
-            WebsiteExpanded EditedAccount = (WebsiteExpanded)DataGrid.SelectedItem;
-            win5.Title = "Edit Account";
-            win5.Name_Of_Website.Text = EditedAccount.Website_name;
-            win5.Website.Text = EditedAccount.Website_address;
-            win5.Login.Text = EditedAccount.Login;
-            win5.password_box.Password = EditedAccount.Password;
-            win5.ShowDialog();
-            if (win5.succesfull == true)
+            if ((WebsiteExpanded)DataGrid.SelectedItem != null)
             {
-                var con = Connect();
-                using (StreamWriter sw = con.StandardInput)
+                Window5 win5 = new Window5(0, 0, 0, 0, 0, false);
+                WebsiteExpanded EditedAccount = (WebsiteExpanded)DataGrid.SelectedItem;
+                win5.Title = "Edit Account";
+                win5.Name_Of_Website.Text = EditedAccount.Website_name;
+                win5.Website.Text = EditedAccount.Website_address;
+                win5.Login.Text = EditedAccount.Login;
+                win5.password_box.Password = EditedAccount.Password;
+                win5.ShowDialog();
+                if (win5.succesfull == true)
                 {
-                    if (sw.BaseStream.CanWrite)
+                    var con = Connect();
+                    using (StreamWriter sw = con.StandardInput)
                     {
-                        sw.WriteLine("sqlite3 " + login);
-                        sw.WriteLine("PRAGMA key = '" + password.Password.ToString() + "';");
-                        sw.WriteLine("UPDATE Website SET Website_name = '{0}', Website_address = '{1}', Login = '{2}', Password = '{3}', Date = '{4}' WHERE ID = {5};", win5.Name_Of_Website.Text.ToString(), win5.Website.Text.ToString(), win5.Login.Text.ToString(), win5.password_box.Password.ToString(), DateTime.Today.ToString("d"), EditedAccount.ID);
-                        sw.WriteLine(".quit");
+                        if (sw.BaseStream.CanWrite)
+                        {
+                            sw.WriteLine("sqlite3 " + login);
+                            sw.WriteLine("PRAGMA key = '" + password.Password.ToString() + "';");
+                            sw.WriteLine("UPDATE Website SET Website_name = '{0}', Website_address = '{1}', Login = '{2}', Password = '{3}', Date = '{4}' WHERE ID = {5};", win5.Name_Of_Website.Text.ToString(), win5.Website.Text.ToString(), win5.Login.Text.ToString(), win5.password_box.Password.ToString(), DateTime.Today.ToString("d"), EditedAccount.ID);
+                            sw.WriteLine(".quit");
+                        }
                     }
+                    Data.Clear();
+                    Read();
                 }
-                Data.Clear();
-                Read();
             }
         }
         private void Edit_Click(object sender, RoutedEventArgs e)
         {
-            PasswordBox.Visibility = Visibility.Visible;
-            PasswordText.Visibility = Visibility.Hidden;
-            Single_Account.Visibility = Visibility.Visible;
-            WebsiteExpanded EditedAccount = (WebsiteExpanded)DataGrid.SelectedItem;
-            PasswordBox SinglePassword = new PasswordBox();
-            SinglePassword.Password = EditedAccount.Password;
-            Single_Account.Header = EditedAccount.Website_name;
-            Your_Name.Content = EditedAccount.Website_name;
-            Login.Content = EditedAccount.Login;
-            PasswordText.Content = SinglePassword.Password;
-            PasswordBox.Content = "********";
+            if ((WebsiteExpanded)DataGrid.SelectedItem != null)
+            {
+                PasswordBox.Visibility = Visibility.Visible;
+                PasswordText.Visibility = Visibility.Hidden;
+                Single_Account.Visibility = Visibility.Visible;
+                WebsiteExpanded EditedAccount = (WebsiteExpanded)DataGrid.SelectedItem;
+                PasswordBox SinglePassword = new PasswordBox();
+                SinglePassword.Password = EditedAccount.Password;
+                Single_Account.Header = EditedAccount.Website_name;
+                Your_Name.Content = EditedAccount.Website_name;
+                Login.Content = EditedAccount.Login;
+                PasswordText.Content = SinglePassword.Password;
+                PasswordBox.Content = "********";
 
-            if (EditedAccount.Website_address.Contains("://"))
-            {
-                hyperlink.NavigateUri = new Uri(EditedAccount.Website_address);
+                if (EditedAccount.Website_address.Contains("://"))
+                {
+                    hyperlink.NavigateUri = new Uri(EditedAccount.Website_address);
+                }
+                else
+                {
+                    hyperlink.NavigateUri = new Uri("http://" + EditedAccount.Website_address);
+                }
+                URL2.Content = EditedAccount.Website_address;
+                Date.Content = EditedAccount.Date;
+
+                string path = EditedAccount.Website_address;
+                path = CharStrip(path);
+                if (File.Exists(path))
+                {
+                    BitmapImage bitmap = new BitmapImage();
+                    bitmap.BeginInit();
+                    bitmap.UriSource = new Uri(path);
+                    bitmap.EndInit();
+                    Icon.Source = bitmap;
+                }
+                else
+                {
+                    Icon.Source = null;
+                }
             }
-            else
-            {
-                hyperlink.NavigateUri = new Uri("http://" + EditedAccount.Website_address);
-            }
-            URL2.Content = EditedAccount.Website_address;
-            Date.Content = EditedAccount.Date;
         }
+
         private void Delete(object sender, RoutedEventArgs e)
         {
-            WebsiteExpanded EditedAccount = (WebsiteExpanded)DataGrid.SelectedItem;
-            Delete_Data(EditedAccount.ID);
-            Data.Clear();
-            Read();
-            Single_Account.Visibility = Visibility.Hidden;
+            if ((WebsiteExpanded)DataGrid.SelectedItem != null)
+            {
+                WebsiteExpanded EditedAccount = (WebsiteExpanded)DataGrid.SelectedItem;
+                Delete_Data(EditedAccount.ID);
+                Data.Clear();
+                Read();
+                Single_Account.Visibility = Visibility.Hidden;
+            }
         }
         private void Delete_Data(int ID)
         {

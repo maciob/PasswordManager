@@ -49,7 +49,7 @@ namespace PasswordManager
             {
                 File.Delete("temp.db");
             }
-            if (password_text.Visibility != System.Windows.Visibility.Collapsed)
+            if (password_text.Visibility != Visibility.Collapsed)
             {
                 password_box.Password = password_text.Text;
             }
@@ -78,12 +78,13 @@ namespace PasswordManager
                 if (p.StandardError.ReadToEnd() != "")
                 {
                     Window2 win2 = new Window2();
+                    win2.Title = "Error";
                     win2.Error.Content = "You have entered your password or account name incorrectly.\nPlease check your password and account name and try again.";
                     win2.ShowDialog();
                 }
                 else
                 {
-                    this.Visibility = Visibility.Collapsed;
+                    this.Visibility = Visibility.Hidden;
                     Window1 win1 = new Window1(login_user.Text + ".db", password_box);
                     win1.ShowDialog();
                     this.login_user.Text = "";
@@ -95,6 +96,7 @@ namespace PasswordManager
             else
             {
                 Window2 win2 = new Window2();
+                win2.Title = "Error";
                 win2.Error.Content = "You have entered your password or account name incorrectly.\nPlease check your password and account name and try again.";
                 win2.ShowDialog();
             }
@@ -121,6 +123,7 @@ namespace PasswordManager
                 if (File.Exists(win6.Login.Text + ".db"))
                 {
                     Window2 win2 = new Window2();
+                    win2.Title = "Error";
                     win2.Error.Content = "Such a user already exist!";
                     win2.ShowDialog();
                 }

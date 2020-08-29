@@ -11,23 +11,23 @@
         <Grid DockPanel.Dock="Left" Width="400" Margin="350,0,0,0">
             <GroupBox Name="Single_Account" Margin="0,0,0,40">
                 <Grid Name="Edit_Clicked">
-                    <Label Content="Your Name" HorizontalAlignment="Left" Margin="30,50,0,0" VerticalAlignment="Top" Width="109"/>
-                    <Label Content="Login" HorizontalAlignment="Left" Margin="30,100,0,0" VerticalAlignment="Top" Width="109"/>
-                    <Label Content="Password" HorizontalAlignment="Left" Margin="30,150,0,0" VerticalAlignment="Top" Width="109"/>
-                    <Label Content="URL" HorizontalAlignment="Left" Margin="30,200,0,0" VerticalAlignment="Top" Width="109"/>
-                    <Label Content="Date" HorizontalAlignment="Left" Margin="30,250,0,0" VerticalAlignment="Top" Width="109"/>
+                    <Label Content="Your Name" HorizontalAlignment="Left" Margin="30,34,0,0" VerticalAlignment="Top" Width="109"/>
+                    <Label Content="Login" HorizontalAlignment="Left" Margin="30,84,0,0" VerticalAlignment="Top" Width="109"/>
+                    <Label Content="Password" HorizontalAlignment="Left" Margin="30,134,0,0" VerticalAlignment="Top" Width="109"/>
+                    <Label Content="URL" HorizontalAlignment="Left" Margin="30,184,0,0" VerticalAlignment="Top" Width="109"/>
+                    <Label Content="Date" HorizontalAlignment="Left" Margin="30,234,0,0" VerticalAlignment="Top" Width="109"/>
                     <Button Content="Edit" HorizontalAlignment="Left" Margin="87,299,0,0" VerticalAlignment="Top" Width="75" Click="Edit"/>
                     <Button Content="Delete" HorizontalAlignment="Left" Margin="231,299,0,0" VerticalAlignment="Top" Width="75" Click="Delete"/>
-                    <Label Name="Your_Name" HorizontalAlignment="Left" Margin="144,50,0,0" VerticalAlignment="Top" Width="130"/>
-                    <Label Name="Login" HorizontalAlignment="Left" Margin="144,100,0,0" VerticalAlignment="Top" Width="130"/>
-                    <Label Name="PasswordText" HorizontalAlignment="Left" Margin="144,150,0,0" VerticalAlignment="Top" Width="109"/>
-                    <Label Name="PasswordBox" HorizontalAlignment="Left" Margin="144,150,0,0" VerticalAlignment="Top" Width="130"/>
-                    <TextBlock Name="URL" Margin="144,200,84,112" TextWrapping="Wrap" RenderTransformOrigin="0.48,1.808">
+                    <Label Name="Your_Name" HorizontalAlignment="Left" Margin="144,34,0,0" VerticalAlignment="Top" Width="130"/>
+                    <Label Name="Login" HorizontalAlignment="Left" Margin="144,84,0,0" VerticalAlignment="Top" Width="130"/>
+                    <Label Name="PasswordText" HorizontalAlignment="Left" Margin="144,134,0,0" VerticalAlignment="Top" Width="109"/>
+                    <Label Name="PasswordBox" HorizontalAlignment="Left" Margin="144,134,0,0" VerticalAlignment="Top" Width="130"/>
+                    <TextBlock Name="URL" Margin="144,184,116,138" TextWrapping="Wrap" RenderTransformOrigin="0.48,1.808">
                         <Hyperlink Name="hyperlink" RequestNavigate="Hyperlink"><Label Name="URL2" Height="30" Width="129"></Label></Hyperlink>
                     </TextBlock>
-                    <Label Name="Date" HorizontalAlignment="Left" Margin="144,250,0,0" VerticalAlignment="Top" Width="130"/>
-                    <Button Content="Show" HorizontalAlignment="Left" Margin="288,150,0,0" VerticalAlignment="Top" Width="75" Click="Show_Click"/>
-
+                    <Label Name="Date" HorizontalAlignment="Left" Margin="144,234,0,0" VerticalAlignment="Top" Width="130"/>
+                    <Button Content="Show" HorizontalAlignment="Left" Margin="289,134,0,0" VerticalAlignment="Top" Width="75" Click="Show_Click"/>
+                    <Image Name="Icon" Margin="289,34,26,252"/>
                 </Grid>
             </GroupBox>
             <TextBlock Name="TimeLeft" HorizontalAlignment="Left" Margin="0,386,0,0" VerticalAlignment="Top" Height="25" Width="250"/>

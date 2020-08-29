@@ -32,22 +32,37 @@ namespace PasswordManager
         {
             unsuccessfull = false;
             if (!File.Exists(Username.Text + ".db"))
-                try
+            {
+                if (Username.Text.Length > 5)
                 {
-                    WebClient client = new WebClient();
-                    client.DownloadFile("ftp://192.168.1.34/" + OTP.Text + ".db", Username.Text + ".db"); //download
+                    try
+                    {
+                        WebClient client = new WebClient();
+                        client.DownloadFile("ftp://192.168.1.34/" + OTP.Text + ".db", Username.Text + ".db"); //download
+                    }
+                    catch (Exception ex)
+                    {
+                        unsuccessfull = true;
+                        Window2 win2 = new Window2();
+                        win2.Title = "Error";
+                        win2.Error.Content = "Your OTP is wrong.";
+                        win2.ShowDialog();
+                    }
                 }
-                catch (Exception ex)
+                else 
                 {
                     unsuccessfull = true;
                     Window2 win2 = new Window2();
-                    win2.Error.Content = "Your OTP is wrong.";
+                    win2.Title = "Error";
+                    win2.Error.Content = "Your username must be at least 5 characters long.";
                     win2.ShowDialog();
                 }
-            else 
+            }
+            else
             {
                 unsuccessfull = true;
                 Window2 win2 = new Window2();
+                win2.Title = "Error";
                 win2.Error.Content = "This user already exist!";
                 win2.ShowDialog();
             }
@@ -57,6 +72,7 @@ namespace PasswordManager
                 request.Method = WebRequestMethods.Ftp.DeleteFile;
                 FtpWebResponse response = (FtpWebResponse)request.GetResponse();
                 Window2 win2 = new Window2();
+                win2.Title = "Success";
                 win2.Error.Content = "The database has been downloaded successfully!";
                 this.Hide();
                 win2.ShowDialog();
