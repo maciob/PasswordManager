@@ -18,14 +18,14 @@
                     <Label Content="Date" HorizontalAlignment="Left" Margin="30,250,0,0" VerticalAlignment="Top" Width="109"/>
                     <Button Content="Edit" HorizontalAlignment="Left" Margin="87,299,0,0" VerticalAlignment="Top" Width="75" Click="Edit"/>
                     <Button Content="Delete" HorizontalAlignment="Left" Margin="231,299,0,0" VerticalAlignment="Top" Width="75" Click="Delete"/>
-                    <Label Name="Your_Name" HorizontalAlignment="Left" Margin="144,50,0,0" VerticalAlignment="Top" Width="109"/>
-                    <Label Name="Login" HorizontalAlignment="Left" Margin="144,100,0,0" VerticalAlignment="Top" Width="109"/>
+                    <Label Name="Your_Name" HorizontalAlignment="Left" Margin="144,50,0,0" VerticalAlignment="Top" Width="130"/>
+                    <Label Name="Login" HorizontalAlignment="Left" Margin="144,100,0,0" VerticalAlignment="Top" Width="130"/>
                     <Label Name="PasswordText" HorizontalAlignment="Left" Margin="144,150,0,0" VerticalAlignment="Top" Width="109"/>
-                    <Label Name="PasswordBox" HorizontalAlignment="Left" Margin="144,150,0,0" VerticalAlignment="Top" Width="109"/>
+                    <Label Name="PasswordBox" HorizontalAlignment="Left" Margin="144,150,0,0" VerticalAlignment="Top" Width="130"/>
                     <TextBlock Name="URL" Margin="144,200,84,112" TextWrapping="Wrap" RenderTransformOrigin="0.48,1.808">
-                        <Hyperlink Name="hyperlink" RequestNavigate="Hyperlink"><Label Name="URL2" Height="30" Width="105"></Label></Hyperlink>
+                        <Hyperlink Name="hyperlink" RequestNavigate="Hyperlink"><Label Name="URL2" Height="30" Width="129"></Label></Hyperlink>
                     </TextBlock>
-                    <Label Name="Date" HorizontalAlignment="Left" Margin="144,250,0,0" VerticalAlignment="Top" Width="109"/>
+                    <Label Name="Date" HorizontalAlignment="Left" Margin="144,250,0,0" VerticalAlignment="Top" Width="130"/>
                     <Button Content="Show" HorizontalAlignment="Left" Margin="288,150,0,0" VerticalAlignment="Top" Width="75" Click="Show_Click"/>
 
                 </Grid>
@@ -37,16 +37,23 @@
             <Grid>
                 <Button Content="Account Settings" HorizontalAlignment="Left" Margin="0,145,0,0" VerticalAlignment="Top" Width="150" Click="AccountSettings_Click"/>
                 <Button Content="SHARE DATABASE" HorizontalAlignment="Left" Margin="0,172,0,0" VerticalAlignment="Top" Width="150" Click="ShareDatabase_Click"/>
-                <Label Name="Account" HorizontalAlignment="Left" Margin="55,114,0,0" VerticalAlignment="Top"/>
+                <Label Name="Account" HorizontalAlignment="Center" Margin="0,120,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.4,-0.2" Width="150" Height="28"/>
                 <Button Content="ADD NEW ACCOUNT" HorizontalAlignment="Left" Margin="0,199,0,0" VerticalAlignment="Top" Width="150" Click="NewAccount_Click"/>
                 <Button Content="PASSWORD GENERATOR" HorizontalAlignment="Left" Margin="0,226,0,0" VerticalAlignment="Top" Width="150" Click="Button_Gen_Set"/>
                 <Button Content="GENERATE NEW PASSWORD" HorizontalAlignment="Left" Margin="0,253,0,0" VerticalAlignment="Top" Width="150" Click="Button_Generate"/>
+                <Image Name ="Person" Margin="25,27,25,294" Height="100" RenderTransformOrigin="0.5,0.685"/>
             </Grid>
         </Grid>
-        <DataGrid Name="DataGrid" AutoGenerateColumns="False" ItemsSource="{Binding Path=Data}" CanUserAddRows="False" IsReadOnly="True" CanUserSortColumns="False" MouseDoubleClick="Edit_Click" DataGridCell.Selected="Edit_Click" CanUserResizeColumns="False" Margin="150,0,394,0">
+        <DataGrid Name="DataGrid" AutoGenerateColumns="False" ItemsSource="{Binding Path=Data}" CanUserAddRows="False" IsReadOnly="True" CanUserSortColumns="False" MouseDoubleClick="Edit_Click" DataGridCell.Selected="Edit_Click" CanUserResizeColumns="True" Margin="150,0,394,0" RowHeight="30">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="" Width="50"/>
-                <DataGridTextColumn Header="" Binding="{Binding Path=Website_name}" Width="150"/>
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image Source="{Binding Path=ImageSource}" Width="30" Height="30"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="" Binding="{Binding Path=Website_name}" Width="160"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

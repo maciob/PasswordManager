@@ -20,7 +20,7 @@ using SQLite;
 using MahApps.Metro.Controls;
 using System.Windows.Threading;
 using System.Windows.Navigation;
-
+using System.Web.UI.WebControls;
 namespace PasswordManager
 {
 
@@ -34,12 +34,12 @@ namespace PasswordManager
         int NumberFlag;
         public string login;
         PasswordBox password;
-        int time_ammount = 10;
+        int time_ammount = 300;
 
         TimeSpan time;
         DispatcherTimer timer;
 
-        public ObservableCollection<Website> Data { get; private set; } = new ObservableCollection<Website>();
+        public ObservableCollection<WebsiteExpanded> Data { get; private set; } = new ObservableCollection<WebsiteExpanded>();
 
         public Window1(string user, PasswordBox pass)
         {
@@ -49,7 +49,20 @@ namespace PasswordManager
             login = user;
             password = pass;
             Read();
-            Account.Content = login;
+            string name = login;
+            if (name.Contains("."))
+            {
+                name = name.Remove(name.IndexOf("."), name.Length - name.IndexOf("."));
+            }
+            string directory = Directory.GetCurrentDirectory();
+            string path = @"\brands\person.jpg";
+            path = directory + path;
+            BitmapImage bitmap = new BitmapImage();
+            bitmap.BeginInit();
+            bitmap.UriSource = new Uri(path);
+            bitmap.EndInit();
+            Person.Source = bitmap;
+            Account.Content = name;
             EventManager.RegisterClassHandler(typeof(Window), Window.PreviewMouseMoveEvent, new MouseEventHandler(OnPreviewMouseMove));
             EventManager.RegisterClassHandler(typeof(Window), Window.PreviewKeyDownEvent, new KeyEventHandler(OnPreviewKeyDown));
 
@@ -76,11 +89,12 @@ namespace PasswordManager
 
         }
 
-        public class Website
+        public class WebsiteExpanded
         {
             [PrimaryKey, AutoIncrement]
             public int ID { get; set; }
             [Indexed]
+            public BitmapImage ImageSource { get; set; }
             public string Website_name { get; set; }
             public string Website_address { get; set; }
             public string Login { get; set; }
@@ -125,7 +139,7 @@ namespace PasswordManager
                 var s = line.Split('|');
                 if (Char.IsNumber(s[0], 0))
                 {
-                    var element = new Website
+                    var element = new WebsiteExpanded
                     {
                         ID = Int32.Parse(s[0]),
                         Website_name = s[1],
@@ -134,10 +148,45 @@ namespace PasswordManager
                         Password = s[4],
                         Date = s[5]
                     };
+                    string path = element.Website_address;
+                    path = CharStrip(path);
+                    if (File.Exists(path)) 
+                    {
+                        BitmapImage bitmap = new BitmapImage();
+                        bitmap.BeginInit();
+                        bitmap.UriSource = new Uri(path);
+                        bitmap.EndInit();
+                        element.ImageSource = bitmap;
+                    }
                     Data.Add(element);
                 }
             }
         }
+        private string CharStrip(string URL) 
+        {
+            if (URL.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+            {
+                URL = URL.Remove(0, 8);
+            }
+            if (URL.StartsWith("http://", StringComparison.OrdinalIgnoreCase))
+            {
+                URL = URL.Remove(0, 7);
+            }
+            if (URL.StartsWith("www.", StringComparison.OrdinalIgnoreCase))
+            {
+                URL = URL.Remove(0, 4);
+            }
+            if (URL.Contains("."))
+            {
+                URL = URL.Remove(URL.IndexOf("."), URL.Length - URL.IndexOf("."));
+            }
+            string directory = Directory.GetCurrentDirectory();
+            URL = @"\brands\"  + URL + ".png";
+            URL = directory + URL;
+            Console.WriteLine(URL);
+            return URL;
+        }
+
 
         private void Button_Gen_Set(object sender, RoutedEventArgs e)
         {
@@ -167,7 +216,6 @@ namespace PasswordManager
 
         private void Button_Generate(object sender, RoutedEventArgs e)
         {
-            Window5 win5 = new Window5();
             if (Length == 0)
             {
                 Length = 16;
@@ -176,9 +224,9 @@ namespace PasswordManager
                 SpecialFlag = 1;
                 NumberFlag = 1;
             }
-            win5.Generate(Length, LowerFlag, UpperFlag, SpecialFlag, NumberFlag);
+            Window5 win5 = new Window5(Length, LowerFlag, UpperFlag, SpecialFlag, NumberFlag, true);
             win5.ShowDialog();
-            if (win5.succesfull)
+            if (win5.succesfull==true)
             {
                 Add(win5.Name_Of_Website.Text.ToString(), win5.Website.Text.ToString(), win5.Login.Text.ToString(), win5.password_box.Password.ToString(), DateTime.Today.ToString("d"));
             }
@@ -203,8 +251,8 @@ namespace PasswordManager
         }
         private void Edit(object sender, RoutedEventArgs e)
         {
-            Window5 win5 = new Window5();
-            Website EditedAccount = (Website)DataGrid.SelectedItem;
+            Window5 win5 = new Window5(0,0,0,0,0,false);
+            WebsiteExpanded EditedAccount = (WebsiteExpanded)DataGrid.SelectedItem;
             win5.Title = "Edit Account";
             win5.Name_Of_Website.Text = EditedAccount.Website_name;
             win5.Website.Text = EditedAccount.Website_address;
@@ -233,7 +281,7 @@ namespace PasswordManager
             PasswordBox.Visibility = Visibility.Visible;
             PasswordText.Visibility = Visibility.Hidden;
             Single_Account.Visibility = Visibility.Visible;
-            Website EditedAccount = (Website)DataGrid.SelectedItem;
+            WebsiteExpanded EditedAccount = (WebsiteExpanded)DataGrid.SelectedItem;
             PasswordBox SinglePassword = new PasswordBox();
             SinglePassword.Password = EditedAccount.Password;
             Single_Account.Header = EditedAccount.Website_name;
@@ -255,8 +303,11 @@ namespace PasswordManager
         }
         private void Delete(object sender, RoutedEventArgs e)
         {
-            Website EditedAccount = (Website)DataGrid.SelectedItem;
+            WebsiteExpanded EditedAccount = (WebsiteExpanded)DataGrid.SelectedItem;
             Delete_Data(EditedAccount.ID);
+            Data.Clear();
+            Read();
+            Single_Account.Visibility = Visibility.Hidden;
         }
         private void Delete_Data(int ID)
         {
@@ -271,8 +322,6 @@ namespace PasswordManager
                     sw.WriteLine(".quit");
                 }
             }
-            Data.Clear();
-            Read();
         }
 
         private void OnPreviewMouseMove(object sender, MouseEventArgs e)
@@ -312,7 +361,8 @@ namespace PasswordManager
 
         private void ShareDatabase_Click(object sender, RoutedEventArgs e)
         {
-
+            Window3 win3 = new Window3(login);
+            win3.ShowDialog();
         }
 
 
@@ -323,7 +373,7 @@ namespace PasswordManager
 
         private void NewAccount_Click(object sender, RoutedEventArgs e)
         {
-            Window5 win5 = new Window5();
+            Window5 win5 = new Window5(0,0,0,0,0,false);
             win5.Title = "New Account";
             win5.ShowDialog();
             if (win5.succesfull)
