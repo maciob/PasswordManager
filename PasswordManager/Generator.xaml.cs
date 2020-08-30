@@ -133,8 +133,8 @@ namespace PasswordManager
 
         private string GetUniqueSpecial()
         {
-            char[] chars = new char[23];
-            chars = "!@#$%^&*()-_=+[]{}:<>,?".ToCharArray();
+            char[] chars = new char[22];
+            chars = "!#$%^&*()-_=+[]{}:<>,?".ToCharArray();
             byte[] data = new byte[1];
             RNGCryptoServiceProvider crypto = new RNGCryptoServiceProvider();
             crypto.GetBytes(data);
@@ -152,8 +152,8 @@ namespace PasswordManager
             bool flag_Check_lower = false;
             bool flag_Check_upper = false;
             bool flag_Check_num = false;
-            char[] chars_spec = new char[23];
-            chars_spec = "!@#$%^&*()-_=+[]{}:<>,?".ToCharArray();
+            char[] chars_spec = new char[22];
+            chars_spec = "!#$%^&*()-_=+[]{}:<>,?".ToCharArray();
             char[] chars_num = new char[10];
             chars_num = "1234567890".ToCharArray();
             char[] chars_upper = new char[26];
@@ -164,7 +164,7 @@ namespace PasswordManager
             {
                 if (special_char == 1)
                 {
-                    for (int j = 0; j < 23; j++)
+                    for (int j = 0; j < 22; j++)
                     {
                         if (result[i] == chars_spec[j])
                             flag_Check_spec = true;
