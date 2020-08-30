@@ -21,7 +21,7 @@ using MahApps.Metro.Controls;
 using System.Windows.Threading;
 using System.Windows.Navigation;
 using System.Web.UI.WebControls;
-using SharpVectors.Dom.Svg;
+using System.Data.SqlClient;
 
 namespace PasswordManager
 {
@@ -130,46 +130,56 @@ namespace PasswordManager
         {
             System.Threading.Thread.Sleep(1000);
             var con = Connect();
-            using (StreamWriter sw = con.StandardInput)
+
+            if (checkForSQLInjection(login) == false && checkForSQLInjection(password.Password.ToString()) == false)
             {
-                if (sw.BaseStream.CanWrite)
+                using (StreamWriter sw = con.StandardInput)
                 {
-                    sw.WriteLine("sqlite3 " + login);
-                    sw.WriteLine("PRAGMA key = '" + password.Password.ToString() + "';");
-                    sw.WriteLine("SELECT * FROM Website;");
-                    sw.WriteLine(".quit");
+                    if (sw.BaseStream.CanWrite)
+                    {
+                        sw.WriteLine("sqlite3 {0}", login);
+                        sw.WriteLine("PRAGMA key = '{0}';", password.Password.ToString());
+                        sw.WriteLine("SELECT * FROM Website;");
+                        sw.WriteLine(".quit");
+                    }
+                }
+                string result = con.StandardOutput.ReadToEnd();
+                var Lines = result.Split('\n');
+                foreach (var line in Lines)
+                {
+                    Console.WriteLine(line);
+                    var s = line.Split('|');
+                    if (Char.IsNumber(s[0], 0))
+                    {
+                        var element = new WebsiteExpanded
+                        {
+                            ID = Int32.Parse(s[0]),
+                            Website_name = s[1],
+                            Website_address = s[2],
+                            Login = s[3],
+                            Password = s[4],
+                            Date = s[5]
+                        };
+                        string path = element.Website_address;
+                        path = CharStrip(path);
+                        if (File.Exists(path))
+                        {
+                            BitmapImage bitmap = new BitmapImage();
+                            bitmap.BeginInit();
+                            bitmap.UriSource = new Uri(path);
+                            bitmap.EndInit();
+                            element.ImageSource = bitmap;
+                        }
+                        Data.Add(element);
+                    }
                 }
             }
-
-            string result = con.StandardOutput.ReadToEnd();
-            var Lines = result.Split('\n');
-            foreach (var line in Lines)
+            else
             {
-                Console.WriteLine(line);
-                var s = line.Split('|');
-                if (Char.IsNumber(s[0], 0))
-                {
-                    var element = new WebsiteExpanded
-                    {
-                        ID = Int32.Parse(s[0]),
-                        Website_name = s[1],
-                        Website_address = s[2],
-                        Login = s[3],
-                        Password = s[4],
-                        Date = s[5]
-                    };
-                    string path = element.Website_address;
-                    path = CharStrip(path);
-                    if (File.Exists(path)) 
-                    {
-                        BitmapImage bitmap = new BitmapImage();
-                        bitmap.BeginInit();
-                        bitmap.UriSource = new Uri(path);
-                        bitmap.EndInit();
-                        element.ImageSource = bitmap;
-                    }
-                    Data.Add(element);
-                }
+                Window2 win2 = new Window2();
+                win2.Title = "Error";
+                win2.Error.Content = "Are you trying out SQLInjection?";
+                win2.ShowDialog();
             }
         }
         private string CharStrip(string URL) 
@@ -248,16 +258,25 @@ namespace PasswordManager
         private void Add(string Name, string WebsiteName, string Login, string new_password, string date)
         {
             var con = Connect();
-            using (StreamWriter sw = con.StandardInput)
+            if (checkForSQLInjection(Name) == false && checkForSQLInjection(WebsiteName) == false && checkForSQLInjection(Login) == false && checkForSQLInjection(new_password) == false)
             {
-                if (sw.BaseStream.CanWrite)
+                using (StreamWriter sw = con.StandardInput)
                 {
-                    sw.WriteLine("sqlite3 " + login);
-                    sw.WriteLine("PRAGMA key = '" + password.Password.ToString() + "';");
-                    sw.WriteLine("INSERT INTO Website( Website_name , Website_address , Login , Password , Date ) VALUES('{0}','{1}','{2}','{3}','{4}');", Name, WebsiteName, Login, new_password, date);
-
-                    sw.WriteLine(".quit");
+                    if (sw.BaseStream.CanWrite)
+                    {
+                        sw.WriteLine("sqlite3 {0}", login);
+                        sw.WriteLine("PRAGMA key = '{0}';", password.Password.ToString());
+                        sw.WriteLine("INSERT INTO Website( Website_name , Website_address , Login , Password , Date ) VALUES('{0}','{1}','{2}','{3}','{4}');", Name, WebsiteName, Login, new_password, date);
+                        sw.WriteLine(".quit");
+                    }
                 }
+            }
+            else 
+            {
+                Window2 win2 = new Window2();
+                win2.Title = "Error";
+                win2.Error.Content = "Are you trying out SQLInjection? Try again.";
+                win2.ShowDialog();
             }
         }
         private void Edit(object sender, RoutedEventArgs e)
@@ -274,19 +293,22 @@ namespace PasswordManager
                 win5.ShowDialog();
                 if (win5.succesfull == true)
                 {
-                    var con = Connect();
-                    using (StreamWriter sw = con.StandardInput)
+                    if (checkForSQLInjection(win5.Name_Of_Website.Text.ToString()) == false && checkForSQLInjection(win5.Website.Text.ToString()) == false && checkForSQLInjection(win5.Login.Text.ToString()) == false && checkForSQLInjection(win5.password_box.Password.ToString()) == false)
                     {
-                        if (sw.BaseStream.CanWrite)
+                        var con = Connect();
+                        using (StreamWriter sw = con.StandardInput)
                         {
-                            sw.WriteLine("sqlite3 " + login);
-                            sw.WriteLine("PRAGMA key = '" + password.Password.ToString() + "';");
-                            sw.WriteLine("UPDATE Website SET Website_name = '{0}', Website_address = '{1}', Login = '{2}', Password = '{3}', Date = '{4}' WHERE ID = {5};", win5.Name_Of_Website.Text.ToString(), win5.Website.Text.ToString(), win5.Login.Text.ToString(), win5.password_box.Password.ToString(), DateTime.Today.ToString("d"), EditedAccount.ID);
-                            sw.WriteLine(".quit");
+                            if (sw.BaseStream.CanWrite)
+                            {
+                                sw.WriteLine("sqlite3 {0}", login);
+                                sw.WriteLine("PRAGMA key = '{0}';", password.Password.ToString());
+                                sw.WriteLine("UPDATE Website SET Website_name = '{0}', Website_address = '{1}', Login = '{2}', Password = '{3}', Date = '{4}' WHERE ID = {5};", win5.Name_Of_Website.Text.ToString(), win5.Website.Text.ToString(), win5.Login.Text.ToString(), win5.password_box.Password.ToString(), DateTime.Today.ToString("d"), EditedAccount.ID);
+                                sw.WriteLine(".quit");
+                            }
                         }
+                        Data.Clear();
+                        Read();
                     }
-                    Data.Clear();
-                    Read();
                 }
             }
         }
@@ -297,6 +319,7 @@ namespace PasswordManager
                 PasswordBox.Visibility = Visibility.Visible;
                 PasswordText.Visibility = Visibility.Hidden;
                 Single_Account.Visibility = Visibility.Visible;
+                Story.Visibility = Visibility.Hidden;
                 WebsiteExpanded EditedAccount = (WebsiteExpanded)DataGrid.SelectedItem;
                 PasswordBox SinglePassword = new PasswordBox();
                 SinglePassword.Password = EditedAccount.Password;
@@ -348,15 +371,25 @@ namespace PasswordManager
         private void Delete_Data(int ID)
         {
             var con = Connect();
-            using (StreamWriter sw = con.StandardInput)
+            if (checkForSQLInjection(login) == false && checkForSQLInjection(password.Password.ToString()) == false)
             {
-                if (sw.BaseStream.CanWrite)
+                using (StreamWriter sw = con.StandardInput)
                 {
-                    sw.WriteLine("sqlite3 " + login);
-                    sw.WriteLine("PRAGMA key = '" + password.Password.ToString() + "';");
-                    sw.WriteLine("DELETE FROM Website WHERE ID = '" + ID + "';");
-                    sw.WriteLine(".quit");
+                    if (sw.BaseStream.CanWrite)
+                    {
+                        sw.WriteLine("sqlite3 {0}", login);
+                        sw.WriteLine("PRAGMA key = '{0}';", password.Password.ToString());
+                        sw.WriteLine("DELETE FROM Website WHERE ID = '{0}';", ID);
+                        sw.WriteLine(".quit");
+                    }
                 }
+            }
+            else
+            {
+                Window2 win2 = new Window2();
+                win2.Title = "Error";
+                win2.Error.Content = "Are you trying out SQLInjection? Try again.";
+                win2.ShowDialog();
             }
         }
 
@@ -436,17 +469,27 @@ namespace PasswordManager
                             try
                             {
                                 var con = Connect();
-                                using (StreamWriter sw = con.StandardInput)
+                                if (checkForSQLInjection(login) == false && checkForSQLInjection(password.Password.ToString()) == false)
                                 {
-                                    if (sw.BaseStream.CanWrite)
+                                    using (StreamWriter sw = con.StandardInput)
                                     {
-                                        sw.WriteLine("sqlite3 " + login);
-                                        sw.WriteLine("PRAGMA key = '" + password.Password.ToString() + "';");
-                                        sw.WriteLine("PRAGMA rekey = '" + win8.PasswordBox.Password.ToString() + "';");
-                                        sw.WriteLine(".quit");
+                                        if (sw.BaseStream.CanWrite)
+                                        {
+                                            sw.WriteLine("sqlite3 {0}", login);
+                                            sw.WriteLine("PRAGMA key = '{0}';", password.Password.ToString());
+                                            sw.WriteLine("PRAGMA rekey = '{0}';", win8.PasswordBox.Password.ToString());
+                                            sw.WriteLine(".quit");
+                                        }
                                     }
+                                    password.Password = win8.PasswordBox.Password.ToString();
                                 }
-                                password.Password = win8.PasswordBox.Password.ToString();
+                                else
+                                {
+                                    Window2 win2 = new Window2();
+                                    win2.Title = "Error";
+                                    win2.Error.Content = "Are you trying out SQLInjection? Try again.";
+                                    win2.ShowDialog();
+                                }
                             }
                             catch (Exception ex)
                             {
@@ -490,9 +533,9 @@ namespace PasswordManager
                                 {
                                     if (sw.BaseStream.CanWrite)
                                     {
-                                        sw.WriteLine("sqlite3 " + login);
-                                        sw.WriteLine("PRAGMA key = '" + password.Password.ToString() + "';");
-                                        sw.WriteLine("PRAGMA rekey = '" + win8.PasswordBox.Password.ToString() + "';");
+                                        sw.WriteLine("sqlite3 {0}", login);
+                                        sw.WriteLine("PRAGMA key = '{0}';", password.Password.ToString());
+                                        sw.WriteLine("PRAGMA rekey = '{0}';", win8.PasswordBox.Password.ToString());
                                         sw.WriteLine(".quit");
                                     }
                                 }
@@ -538,6 +581,20 @@ namespace PasswordManager
             {
                 return true;
             }
+        }
+        public static Boolean checkForSQLInjection(string userInput)
+        {
+            bool isSQLInjection = false;
+            string[] sqlCheckList = { "--", ";--", ";", "/*", "*/", "@@", "@", "char", "nchar", "varchar", "nvarchar", "alter", "begin", "cast", "create", "cursor", "declare", "delete", "drop", "end", "exec", "execute", "fetch", "insert", "kill", "select", "sys", "sysobjects", "syscolumns", "table", "update" };
+            string CheckString = userInput.Replace("'", "''");
+            for (int i = 0; i <= sqlCheckList.Length - 1; i++)
+            {
+                if ((CheckString.IndexOf(sqlCheckList[i], StringComparison.OrdinalIgnoreCase) >= 0))
+                {
+                    isSQLInjection = true;
+                }
+            }
+            return isSQLInjection;
         }
     }
 }

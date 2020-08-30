@@ -1,5 +1,4 @@
 ﻿using MahApps.Metro.Controls;
-using SharpVectors.Dom.Svg;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,7 +43,7 @@ namespace PasswordManager
         {
             if (LoginText.Visibility == Visibility.Visible) 
             {
-                if (LoginText.Text != login)
+                if (LoginText.Text != login && LoginText.Text.Length > 5)
                 {
                     LoginChanged = true;
                     succesfull = true;
@@ -54,10 +53,11 @@ namespace PasswordManager
                     error = true;
                     Window2 win2 = new Window2();
                     win2.Title = "Error";
-                    win2.Error.Content = "Your login must be different than original!";
+                    win2.Error.Content = "Your login must be different than original\nand have at least 5 characters";
                     win2.ShowDialog();
                 }
             }
+
 
             //Checking if new password is legit
             if (PasswordBox.Visibility == Visibility.Visible || PasswordText.Visibility == Visibility.Visible)

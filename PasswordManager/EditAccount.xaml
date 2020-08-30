@@ -12,11 +12,11 @@
         <Label Content="Password" HorizontalAlignment="Left" Margin="25,62,0,0" VerticalAlignment="Top"/>
         <Button Content="SAVE" HorizontalAlignment="Left" Margin="103,114,0,0" VerticalAlignment="Top" Width="89" Click="Button_Save"/>
         <Button Content="Cancel" HorizontalAlignment="Left" Margin="233,114,0,0" VerticalAlignment="Top" Width="90" Click="Button_Cancel"/>
-        <TextBox HorizontalAlignment="Left" Height="22" Margin="103,25,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="195" Name="LoginText" Visibility="Hidden"/>
+        <TextBox HorizontalAlignment="Left" Height="22" Margin="103,21,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="195" Name="LoginText" Visibility="Hidden"/>
         <TextBox HorizontalAlignment="Left" Height="23" Margin="103,65,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="222" Name="PasswordText" Visibility="Hidden"/>
         <PasswordBox HorizontalAlignment="Left" Height="23" Margin="103,65,0,0" VerticalAlignment="Top" Width="222" Name="PasswordBox" Visibility="Hidden"/>
         <Label Name="PasswordLabel" HorizontalAlignment="Left" Height="23" Margin="103,65,0,0" VerticalAlignment="Top" Width="220" />
-        <Label Name="LoginLabel" HorizontalAlignment="Left" Height="23" Margin="103,25,0,0" VerticalAlignment="Top" Width="222" />
+        <Label Name="LoginLabel" HorizontalAlignment="Left" Height="23" Margin="103,21,0,0" VerticalAlignment="Top" Width="222" />
         <Button Content="Change" Margin="386,66,5,0" VerticalAlignment="Top" Height="15" RenderTransformOrigin="0.967,0.722" Click="Button_EditPassword"/>
         <Button Content="Change" Margin="386,25,5,0" VerticalAlignment="Top" Height="15" RenderTransformOrigin="0.967,0.722" Click="Button_EditLogin"/>
         <Button Content="Show" Margin="328,66,63,0" VerticalAlignment="Top" Height="15" RenderTransformOrigin="0.967,0.722" Click="Button_Show"/>

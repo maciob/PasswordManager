@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using System.Security.Cryptography;
 using System.IO;
 using MahApps.Metro.Controls;
+using System.Security.Policy;
 
 namespace PasswordManager
 {
@@ -132,8 +133,8 @@ namespace PasswordManager
 
         private string GetUniqueSpecial()
         {
-            char[] chars = new char[27];
-            chars = "!@#$%^&*()-_=+[]{}:;'<>,.?/".ToCharArray();
+            char[] chars = new char[23];
+            chars = "!@#$%^&*()-_=+[]{}:<>,?".ToCharArray();
             byte[] data = new byte[1];
             RNGCryptoServiceProvider crypto = new RNGCryptoServiceProvider();
             crypto.GetBytes(data);
@@ -151,8 +152,8 @@ namespace PasswordManager
             bool flag_Check_lower = false;
             bool flag_Check_upper = false;
             bool flag_Check_num = false;
-            char[] chars_spec = new char[27];
-            chars_spec = "!@#$%^&*()-_=+[]{}:;'<>,.?/".ToCharArray();
+            char[] chars_spec = new char[23];
+            chars_spec = "!@#$%^&*()-_=+[]{}:<>,?".ToCharArray();
             char[] chars_num = new char[10];
             chars_num = "1234567890".ToCharArray();
             char[] chars_upper = new char[26];
@@ -163,7 +164,7 @@ namespace PasswordManager
             {
                 if (special_char == 1)
                 {
-                    for (int j = 0; j < 27; j++)
+                    for (int j = 0; j < 23; j++)
                     {
                         if (result[i] == chars_spec[j])
                             flag_Check_spec = true;
@@ -236,7 +237,44 @@ namespace PasswordManager
                 password_text.Visibility = System.Windows.Visibility.Collapsed;
             }
             succesfull = true;
-            this.Close();
+            if (Name_Of_Website.Text.Length <= 3)
+            {
+                succesfull = false;
+                Window2 win2 = new Window2();
+                win2.Title = "Error";
+                win2.Error.Content = "Your website name must be longer than 3 characters!";
+                win2.ShowDialog();
+            }
+            if (!Website.Text.Contains("."))
+            {
+                succesfull = false;
+                Window2 win2 = new Window2();
+                win2.Title = "Error";
+                win2.Error.Content = "The URL must have '.' in it!";
+                win2.ShowDialog();
+            }
+            if (Login.Text.Length <= 3)
+            {
+                succesfull = false;
+                Window2 win2 = new Window2();
+                win2.Title = "Error";
+                win2.Error.Content = "Your login must be longer than 3 characters!";
+                win2.ShowDialog();
+            }
+            Window5 win5 = new Window5(0, 0, 0, 0, 0, false);
+            if (win5.Check(password_box.Password.ToString(), 1, 1, 1, 1) == false || password_box.Password.Length < 8)
+            {
+                succesfull = false;
+                Window2 win2 = new Window2();
+                win2.Title = "Error";
+                win2.Error.Content = "Your password must consist: At least 8 characters and at least\none number, huge letter, small letter and special character.";
+                win2.ShowDialog();
+            }
+            win5.Close();
+            if (succesfull == true)
+            {
+                this.Close();
+            }
         }
     }
 }

@@ -8,9 +8,9 @@
         mc:Ignorable="d"
         Title="Password Manager" Height="450" Width="750" ResizeMode="NoResize">
     <Grid>
-        <Grid DockPanel.Dock="Left" Width="400" Margin="350,0,0,0">
-            <GroupBox Name="Single_Account" Margin="0,0,0,40">
-                <Grid Name="Edit_Clicked">
+        <Grid DockPanel.Dock="Left" Width="400" Margin="350,0,-6,0">
+            <GroupBox Name="Single_Account" Margin="0,0,0,40" Visibility="Collapsed">
+                <Grid Name="Edit_Clicked" >
                     <Label Content="Your Name" HorizontalAlignment="Left" Margin="30,34,0,0" VerticalAlignment="Top" Width="109"/>
                     <Label Content="Login" HorizontalAlignment="Left" Margin="30,84,0,0" VerticalAlignment="Top" Width="109"/>
                     <Label Content="Password" HorizontalAlignment="Left" Margin="30,134,0,0" VerticalAlignment="Top" Width="109"/>
@@ -31,6 +31,17 @@
                 </Grid>
             </GroupBox>
             <TextBlock Name="TimeLeft" HorizontalAlignment="Left" Margin="0,386,0,0" VerticalAlignment="Top" Height="25" Width="250"/>
+            <Grid Name="Story" Margin="0,0,0,40">
+                <Label Name="Storypart1" HorizontalAlignment="Left" VerticalAlignment="Top" Width="390" Height="26" Content="This Password Manager is an engineer thesis made by Maciej Bekas."/>
+                <Label Name="Storypart2" HorizontalAlignment="Left" VerticalAlignment="Top" Width="390" Height="29" Content="It provides all the basic features that a software like this should have." Margin="0,26,0,0"/>
+                <Label Name="Storypart3" HorizontalAlignment="Left" VerticalAlignment="Top" Width="390" Height="29" Content="The database is secured by AES encryption by SQLCipher." Margin="0,55,0,0"/>
+                <Label Name="Storypart4" HorizontalAlignment="Left" VerticalAlignment="Top" Width="390" Height="29" Content="To change the master password or login click account settings." Margin="0,84,0,0"/>
+                <Label Name="Storypart5" HorizontalAlignment="Left" VerticalAlignment="Top" Width="390" Height="29" Content="To transfer database to other device, click share database." Margin="0,113,0,0"/>
+                <Label Name="Storypart6" HorizontalAlignment="Left" VerticalAlignment="Top" Width="390" Height="29" Content="To add new account to the list, click add new account." Margin="0,142,0,0"/>
+                <Label Name="Storypart7" HorizontalAlignment="Left" VerticalAlignment="Top" Width="390" Height="29" Content="To set the password generator settings, click the corresponding button." Margin="0,171,0,0"/>
+                <Label Name="Storypart8" HorizontalAlignment="Left" VerticalAlignment="Top" Width="390" Height="29" Content="To generate new password and add it to database, click the next button." Margin="0,200,0,0"/>
+                <Label x:Name="Storypart9" HorizontalAlignment="Left" VerticalAlignment="Top" Width="390" Height="29" Content="To edit or delete existing accounts, click on the list." Margin="0,229,0,0"/>
+            </Grid>
         </Grid>
         <Grid Margin="0,0,594,0">
             <GroupBox Header="Settings"/>
@@ -43,6 +54,7 @@
                 <Button Content="GENERATE NEW PASSWORD" HorizontalAlignment="Left" Margin="0,253,0,0" VerticalAlignment="Top" Width="150" Click="Button_Generate"/>
                 <Image Name ="Person" Margin="25,27,25,294" Height="100" RenderTransformOrigin="0.5,0.685"/>
                 <Button Content="LOGOUT" HorizontalAlignment="Left" Margin="0,340,0,0" VerticalAlignment="Top" Width="150" Click="Button_Logout"/>
+                <Label Name="Version" HorizontalContentAlignment="Center" Margin="0,383,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.4,-0.2" Width="150" Height="28" Content="Version 1.0.0"/>
             </Grid>
         </Grid>
         <DataGrid Name="DataGrid" AutoGenerateColumns="False" ItemsSource="{Binding Path=Data}" CanUserAddRows="False" IsReadOnly="True" CanUserSortColumns="False" MouseDoubleClick="Edit_Click" DataGridCell.Selected="Edit_Click" CanUserResizeColumns="False" Margin="150,0,394,0" RowHeight="30">

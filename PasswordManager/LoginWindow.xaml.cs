@@ -66,15 +66,26 @@ namespace PasswordManager
                 p.StartInfo = info;
                 p.Start();
 
-                using (StreamWriter sw = p.StandardInput)
+                if (checkForSQLInjection(login_user.Text) == false && checkForSQLInjection(password_box.Password.ToString()) == false)
                 {
-                    if (sw.BaseStream.CanWrite)
+                    using (StreamWriter sw = p.StandardInput)
                     {
-                        sw.WriteLine("sqlite3 " + login_user.Text + ".db");
-                        sw.WriteLine("PRAGMA key = '" + password_box.Password.ToString() + "';");
-                        sw.WriteLine("SELECT * FROM Website;");
+                        if (sw.BaseStream.CanWrite)
+                        {
+                            sw.WriteLine("sqlite3 {0}.db", login_user.Text);
+                            sw.WriteLine("PRAGMA key = '{0}';", password_box.Password.ToString());
+                            sw.WriteLine("SELECT * FROM Website;");
+                        }
                     }
                 }
+                else
+                {
+                    Window2 win2 = new Window2();
+                    win2.Title = "Error";
+                    win2.Error.Content = "Are you trying out SQLInjection? Try again.";
+                    win2.ShowDialog();
+                }
+
                 if (p.StandardError.ReadToEnd() != "")
                 {
                     Window2 win2 = new Window2();
@@ -141,16 +152,26 @@ namespace PasswordManager
                     p.StartInfo = info;
                     p.Start();
 
-                    using (StreamWriter sw = p.StandardInput)
+                    if (checkForSQLInjection(login_user.Text) == false && checkForSQLInjection(password_box.Password.ToString()) == false)
                     {
-                        if (sw.BaseStream.CanWrite)
+                        using (StreamWriter sw = p.StandardInput)
                         {
-                            sw.WriteLine("sqlite3 temp.db");
-                            sw.WriteLine("ATTACH DATABASE '" + win6.Login.Text + ".db" + "' AS encrypted KEY '" + win6.Password_Box.Password.ToString() + "';");
-                            sw.WriteLine("SELECT sqlcipher_export('encrypted');");
-                            sw.WriteLine("DETACH DATABASE encrypted;");
-                            sw.WriteLine(".quit");
+                            if (sw.BaseStream.CanWrite)
+                            {
+                                sw.WriteLine("sqlite3 temp.db");
+                                sw.WriteLine("ATTACH DATABASE '{0}'.db' AS encrypted KEY '{1}';", win6.Login.Text, win6.Password_Box.Password.ToString());
+                                sw.WriteLine("SELECT sqlcipher_export('encrypted');");
+                                sw.WriteLine("DETACH DATABASE encrypted;");
+                                sw.WriteLine(".quit");
+                            }
                         }
+                    }
+                    else
+                    {
+                        Window2 win2 = new Window2();
+                        win2.Title = "Error";
+                        win2.Error.Content = "Are you trying out SQLInjection? Try again.";
+                        win2.ShowDialog();
                     }
                 }
             }
@@ -185,6 +206,20 @@ namespace PasswordManager
             {
                 return true;
             }
+        }
+        public static Boolean checkForSQLInjection(string userInput)
+        {
+            bool isSQLInjection = false;
+            string[] sqlCheckList = { "--", ";--", ";", "/*", "*/", "@@", "@", "char", "nchar", "varchar", "nvarchar", "alter", "begin", "cast", "create", "cursor", "declare", "delete", "drop", "end", "exec", "execute", "fetch", "insert", "kill", "select", "sys", "sysobjects", "syscolumns", "table", "update" };
+            string CheckString = userInput.Replace("'", "''");
+            for (int i = 0; i <= sqlCheckList.Length - 1; i++)
+            {
+                if ((CheckString.IndexOf(sqlCheckList[i], StringComparison.OrdinalIgnoreCase) >= 0))
+                {
+                    isSQLInjection = true;
+                }
+            }
+            return isSQLInjection;
         }
     }
 }
