@@ -10,5 +10,5 @@ Password Manager uses SQLite and SQLCipher instaled on the Window 10 system in c
 3. Open Developer Command prompt for VS2019, go to the destiation directory and type in 'msbuild'.
 4. Executable file will create in .../PasswordManager/PassowordManager/bin/Debug
 ## Warning
-This password manager was't tested by professionall and probably does not assure safety to your passwords.
+This password manager wasn't tested by professionall and probably does not assure safety to your passwords.
 I do not recomend using it. If you want real password manager check [keypass](https://keepass.info)
