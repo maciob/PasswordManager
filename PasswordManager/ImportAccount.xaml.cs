@@ -33,7 +33,7 @@ namespace PasswordManager
             unsuccessfull = false;
             if (!File.Exists(Username.Text + ".db"))
             {
-                if (Username.Text.Length > 5)
+                if (Username.Text.Length >= 5)
                 {
                     try
                     {
