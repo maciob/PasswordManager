@@ -54,7 +54,7 @@
                 <Button Content="GENERATE NEW PASSWORD" HorizontalAlignment="Left" Margin="0,253,0,0" VerticalAlignment="Top" Width="150" Click="Button_Generate"/>
                 <Image Name ="Person" Margin="25,27,25,294" Height="100" RenderTransformOrigin="0.5,0.685"/>
                 <Button Content="LOGOUT" HorizontalAlignment="Left" Margin="0,340,0,0" VerticalAlignment="Top" Width="150" Click="Button_Logout"/>
-                <Label Name="Version" HorizontalContentAlignment="Center" Margin="0,383,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.4,-0.2" Width="150" Height="28" Content="Version 1.0.0"/>
+                <Label Name="Version" HorizontalContentAlignment="Center" Margin="0,383,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.4,-0.2" Width="150" Height="28" Content="Version 1.0.1"/>
             </Grid>
         </Grid>
         <DataGrid Name="DataGrid" AutoGenerateColumns="False" ItemsSource="{Binding Path=Data}" CanUserAddRows="False" IsReadOnly="True" CanUserSortColumns="False" MouseDoubleClick="Edit_Click" DataGridCell.Selected="Edit_Click" CanUserResizeColumns="False" Margin="150,0,394,0" RowHeight="30">
