@@ -43,7 +43,7 @@ namespace PasswordManager
         {
             if (LoginText.Visibility == Visibility.Visible) 
             {
-                if (LoginText.Text != login && LoginText.Text.Length > 5)
+                if (LoginText.Text != login && LoginText.Text.Length >= 5)
                 {
                     LoginChanged = true;
                     succesfull = true;
@@ -57,7 +57,6 @@ namespace PasswordManager
                     win2.ShowDialog();
                 }
             }
-
 
             //Checking if new password is legit
             if (PasswordBox.Visibility == Visibility.Visible || PasswordText.Visibility == Visibility.Visible)
