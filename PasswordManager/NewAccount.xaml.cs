@@ -32,7 +32,7 @@ namespace PasswordManager
             Window5 win5 = new Window5(0, 0, 0, 0, 0, false);
             if (win5.Check(Password_Box.Password.ToString(), 1, 1, 1, 1) == true && Password_Box.Password.Length > 8)
             {
-                if (win5.Login.Text.Length < 5)
+                if (Login.Text.Length < 5)
                 {
                     Window2 win2 = new Window2();
                     win2.Title = "Error";
