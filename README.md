@@ -1,6 +1,6 @@
 # PasswordManager
 This aplication is a password manager.
-It is a engineer thesis made by Maciej Bekas graduating at Warsaw Univercity of Technology. 
+It is a engineer thesis made by Maciej Bekas graduating at Warsaw University of Technology. 
 ## Technologies used
 Password Manager uses SQLite and SQLCipher instaled on the Window 10 system in corresponding versions SQLite version 3.31.0, SQLCipher 4.4.0 community.
 ## Installation
