@@ -7,7 +7,7 @@ Password Manager uses SQLite and SQLCipher instaled on the Windows 10 system in 
 1. Compile [SQLCipher](https://www.zetetic.net/sqlcipher/open-source/).
 2. Compiling SQLCipher on Windows isn't easy so you should probably follow the steps from this video(https://www.youtube.com/watch?v=SFHGeetZ0po).
 3. Open CMD and in destination directory type in 'git clone https://github.com/maciob/PasswordManager'.
-4. Open Developer Command prompt for VS2019, go to the destination directory and type in 'msbuild'.
+4. In the destination directory type 'msbuild'.
 5. Executable file will create in .../PasswordManager/PassowordManager/bin/Debug.
 6. Unpack brands.rar in .../PasswordManager/PassowordManager/bin/Debug.
 ## Warning
