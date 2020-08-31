@@ -159,7 +159,7 @@ namespace PasswordManager
                             if (sw.BaseStream.CanWrite)
                             {
                                 sw.WriteLine("sqlite3 temp.db");
-                                sw.WriteLine("ATTACH DATABASE '{0}'.db' AS encrypted KEY '{1}';", win6.Login.Text, win6.Password_Box.Password.ToString());
+                                sw.WriteLine("ATTACH DATABASE '{0}.db' AS encrypted KEY '{1}';", win6.Login.Text, win6.Password_Box.Password.ToString());
                                 sw.WriteLine("SELECT sqlcipher_export('encrypted');");
                                 sw.WriteLine("DETACH DATABASE encrypted;");
                                 sw.WriteLine(".quit");
