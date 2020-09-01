@@ -61,8 +61,15 @@ namespace PasswordManager
             //Checking if new password is legit
             if (PasswordBox.Visibility == Visibility.Visible || PasswordText.Visibility == Visibility.Visible)
             {
+                if (PasswordText.Visibility != Visibility.Hidden)
+                {
+                    PasswordBox.Password = PasswordText.Text;
+                    PasswordBox.Visibility = Visibility.Visible;
+                    PasswordText.Visibility = Visibility.Hidden;
+                }
+
                 Window5 win5 = new Window5(0, 0, 0, 0, 0, false);
-                if (win5.Check(PasswordBox.Password.ToString(), 1, 1, 1, 1) == true && PasswordBox.Password.Length > 8)
+                if (win5.Check(PasswordBox.Password.ToString(), 1, 1, 1, 1) == true && PasswordBox.Password.Length >= 8)
                 {
                     PasswordChanged = true;
                     succesfull = true;

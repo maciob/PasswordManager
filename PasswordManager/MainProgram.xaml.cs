@@ -543,6 +543,7 @@ namespace PasswordManager
                             }
                             catch (Exception ex)
                             {
+
                             }
                         }
                     }
