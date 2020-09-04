@@ -114,16 +114,16 @@ namespace PasswordManager
 
         Process Connect()
         {
-            Process p2 = new Process();
+            Process p = new Process();
             ProcessStartInfo info = new ProcessStartInfo();
             info.FileName = "cmd.exe";
             info.RedirectStandardInput = true;
             info.RedirectStandardOutput = true;
             info.UseShellExecute = false;
             info.CreateNoWindow = true;
-            p2.StartInfo = info;
-            p2.Start();
-            return p2;
+            p.StartInfo = info;
+            p.Start();
+            return p;
         }
 
         private void Read()
@@ -583,6 +583,24 @@ namespace PasswordManager
                 return true;
             }
         }
+
+        private void Button_Backup(object sender, RoutedEventArgs e)
+        {
+            Window9 win9 = new Window9();
+            win9.ShowDialog();
+            if (win9.succesfull==true) 
+            {
+                string name = login;
+                if (name.Contains("."))
+                {
+                    name = name.Remove(name.IndexOf("."), name.Length - name.IndexOf("."));
+                }
+                File.Delete(login);
+                File.Copy(name + win9.choosenBackup + ".db",login);
+                this.Close();
+            }
+        }
+
         public static Boolean checkForSQLInjection(string userInput)
         {
             bool isSQLInjection = false;
@@ -597,5 +615,7 @@ namespace PasswordManager
             }
             return isSQLInjection;
         }
+
+
     }
 }

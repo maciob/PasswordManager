@@ -16,7 +16,7 @@ using System.Windows.Shapes;
 using System.Diagnostics;
 using SQLite;
 using MahApps.Metro.Controls;
-
+using System.Windows.Threading;
 
 namespace PasswordManager
 {
@@ -43,9 +43,16 @@ namespace PasswordManager
             public string Date { get; set; }
         }
 
+        private int loginTimeFail = 0;
+        int time_ammount = 60;
+        TimeSpan time;
+        DispatcherTimer timer;
+        bool isOnTimer = false;
+
         private void Button_Login(object sender, RoutedEventArgs e)
         {
-            if (File.Exists("temp.db")&& FileInUse("temp.db")==false)
+
+            if (File.Exists("temp.db")&&FileInUse("temp.db")==false)
             {
                 File.Delete("temp.db");
             }
@@ -53,62 +60,143 @@ namespace PasswordManager
             {
                 password_box.Password = password_text.Text;
             }
-            if (File.Exists(login_user.Text + ".db"))
+            if (isOnTimer == false)
             {
-                Process p = new Process();
-                ProcessStartInfo info = new ProcessStartInfo();
-                info.FileName = "cmd.exe";
-                info.RedirectStandardInput = true;
-                info.RedirectStandardOutput = true;
-                info.RedirectStandardError = true;
-                info.UseShellExecute = false;
-                info.CreateNoWindow = true;
-                p.StartInfo = info;
-                p.Start();
-
-                if (checkForSQLInjection(login_user.Text) == false && checkForSQLInjection(password_box.Password.ToString()) == false)
+                if (File.Exists(login_user.Text + ".db"))
                 {
-                    using (StreamWriter sw = p.StandardInput)
+                    Process p = new Process();
+                    ProcessStartInfo info = new ProcessStartInfo();
+                    info.FileName = "cmd.exe";
+                    info.RedirectStandardInput = true;
+                    info.RedirectStandardOutput = true;
+                    info.RedirectStandardError = true;
+                    info.UseShellExecute = false;
+                    info.CreateNoWindow = true;
+                    p.StartInfo = info;
+                    p.Start();
+
+                    if (checkForSQLInjection(login_user.Text) == false && checkForSQLInjection(password_box.Password.ToString()) == false)
                     {
-                        if (sw.BaseStream.CanWrite)
+                        using (StreamWriter sw = p.StandardInput)
                         {
-                            sw.WriteLine("sqlite3 {0}.db", login_user.Text);
-                            sw.WriteLine("PRAGMA key = '{0}';", password_box.Password.ToString());
-                            sw.WriteLine("SELECT * FROM Website;");
+                            if (sw.BaseStream.CanWrite)
+                            {
+                                sw.WriteLine("sqlite3 {0}.db", login_user.Text);
+                                sw.WriteLine("PRAGMA key = '{0}';", password_box.Password.ToString());
+                                sw.WriteLine("SELECT * FROM Website;");
+                            }
                         }
+                    }
+                    else
+                    {
+                        loginTimeFail++;
+                        Window2 win2 = new Window2();
+                        win2.Title = "Error";
+                        win2.Error.Content = "Are you trying out SQLInjection? Try again.";
+                        win2.ShowDialog();
+                    }
+
+                    if (p.StandardError.ReadToEnd() != "")
+                    {
+                        if (isOnTimer == false && loginTimeFail >= 2)
+                        {
+                            isOnTimer = true;
+                            time = TimeSpan.FromSeconds(time_ammount);
+                            timer = new DispatcherTimer(new TimeSpan(0, 0, 1), DispatcherPriority.Normal, delegate
+                            {
+                                if (time == TimeSpan.Zero)
+                                {
+                                    timer.Stop();
+                                    isOnTimer = false;
+                                }
+                                time = time.Add(TimeSpan.FromSeconds(-1));
+                            }, Application.Current.Dispatcher);
+
+                            Window2 win2 = new Window2();
+                            win2.Title = "Error";
+                            win2.Error.Content = "You have entered your password or account name incorrectly.\nPlease check your password and account name and try again\nin 1 minute.";
+                            win2.ShowDialog();
+                        }
+                        else
+                        {
+                            Window2 win2 = new Window2();
+                            win2.Title = "Error";
+                            win2.Error.Content = "You have entered your password or account name incorrectly.\nPlease check your password and account name and try again.";
+                            win2.ShowDialog();
+                        }
+                        loginTimeFail++;
+                    }
+                    else
+                    {
+                        if (File.Exists(login_user.Text + "1.db"))
+                        {
+                            if (File.Exists(login_user.Text + "2.db"))
+                            {
+                                if (File.Exists(login_user.Text + "3.db"))
+                                {
+                                    if (File.Exists(login_user.Text + "4.db"))
+                                    {
+                                        if (File.Exists(login_user.Text + "5.db"))
+                                        {
+                                            File.Delete(login_user.Text + "5.db");
+                                            File.Copy(login_user.Text + "4.db", login_user.Text + "5.db");
+                                        }
+                                        else
+                                        {
+                                            File.Copy(login_user.Text + "4.db", login_user.Text + "5.db");
+                                        }
+                                        File.Delete(login_user.Text + "4.db");
+                                        File.Copy(login_user.Text + "3.db", login_user.Text + "4.db");
+                                    }
+                                    else 
+                                    {
+                                        File.Copy(login_user.Text + "3.db", login_user.Text + "4.db");
+                                    }
+                                    File.Delete(login_user.Text + "3.db");
+                                    File.Copy(login_user.Text + "2.db", login_user.Text + "3.db");
+                                }
+                                else
+                                {
+                                    File.Copy(login_user.Text + "2.db", login_user.Text + "3.db");
+                                }
+                                File.Delete(login_user.Text + "2.db");
+                                File.Copy(login_user.Text + "1.db", login_user.Text + "2.db");
+                            }
+                            else
+                            {
+                                File.Copy(login_user.Text + "1.db", login_user.Text + "2.db");
+                            }
+                            File.Delete(login_user.Text + "1.db");
+                            File.Copy(login_user.Text + ".db", login_user.Text + "1.db");
+                        }
+                        else
+                        {
+                            File.Copy(login_user.Text + ".db", login_user.Text + "1.db");
+                        }
+
+
+                        this.Visibility = Visibility.Hidden;
+                        Window1 win1 = new Window1(login_user.Text + ".db", password_box);
+                        win1.ShowDialog();
+                        this.login_user.Text = "";
+                        this.password_box.Clear();
+                        this.password_text.Text = "";
+                        this.Visibility = Visibility.Visible;
                     }
                 }
                 else
                 {
                     Window2 win2 = new Window2();
                     win2.Title = "Error";
-                    win2.Error.Content = "Are you trying out SQLInjection? Try again.";
-                    win2.ShowDialog();
-                }
-
-                if (p.StandardError.ReadToEnd() != "")
-                {
-                    Window2 win2 = new Window2();
-                    win2.Title = "Error";
                     win2.Error.Content = "You have entered your password or account name incorrectly.\nPlease check your password and account name and try again.";
                     win2.ShowDialog();
                 }
-                else
-                {
-                    this.Visibility = Visibility.Hidden;
-                    Window1 win1 = new Window1(login_user.Text + ".db", password_box);
-                    win1.ShowDialog();
-                    this.login_user.Text = "";
-                    this.password_box.Clear();
-                    this.password_text.Text = "";
-                    this.Visibility = Visibility.Visible;
-                }
             }
-            else
+            else 
             {
                 Window2 win2 = new Window2();
                 win2.Title = "Error";
-                win2.Error.Content = "You have entered your password or account name incorrectly.\nPlease check your password and account name and try again.";
+                win2.Error.Content = "You have entered your password or account name incorrectly.\nPlease check your password and account name and try again in 1 minute.";
                 win2.ShowDialog();
             }
         }

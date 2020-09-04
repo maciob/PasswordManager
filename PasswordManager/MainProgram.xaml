@@ -54,6 +54,7 @@
                 <Button Content="GENERATE NEW PASSWORD" HorizontalAlignment="Left" Margin="0,253,0,0" VerticalAlignment="Top" Width="150" Click="Button_Generate"/>
                 <Image Name ="Person" Margin="25,27,25,294" Height="100" RenderTransformOrigin="0.5,0.685"/>
                 <Button Content="LOGOUT" HorizontalAlignment="Left" Margin="0,340,0,0" VerticalAlignment="Top" Width="150" Click="Button_Logout"/>
+                <Button Content="RESTORE BACKUP" HorizontalAlignment="Left" Margin="0,280,0,0" VerticalAlignment="Top" Width="150" Click="Button_Backup"/>
                 <Label Name="Version" HorizontalContentAlignment="Center" Margin="0,383,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.4,-0.2" Width="150" Height="28" Content="Version 1.0.1"/>
             </Grid>
         </Grid>
@@ -69,5 +70,6 @@
                 <DataGridTextColumn Header="" Binding="{Binding Path=Website_name}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
+        
     </Grid>
 </mah:MetroWindow>
