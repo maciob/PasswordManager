@@ -130,44 +130,49 @@ namespace PasswordManager
                     {
                         if (File.Exists(login_user.Text + "1.db"))
                         {
-                            if (File.Exists(login_user.Text + "2.db"))
+                            Console.WriteLine("Byłem tu");
+                            if (File.GetLastWriteTime(login_user.Text + ".db").ToString().Equals(File.GetLastWriteTime(login_user.Text + "1.db").ToString())==false)
                             {
-                                if (File.Exists(login_user.Text + "3.db"))
+                                Console.WriteLine("Byłem i tu");
+                                if (File.Exists(login_user.Text + "2.db"))
                                 {
-                                    if (File.Exists(login_user.Text + "4.db"))
+                                    if (File.Exists(login_user.Text + "3.db"))
                                     {
-                                        if (File.Exists(login_user.Text + "5.db"))
+                                        if (File.Exists(login_user.Text + "4.db"))
                                         {
-                                            File.Delete(login_user.Text + "5.db");
-                                            File.Copy(login_user.Text + "4.db", login_user.Text + "5.db");
+                                            if (File.Exists(login_user.Text + "5.db"))
+                                            {
+                                                File.Delete(login_user.Text + "5.db");
+                                                File.Copy(login_user.Text + "4.db", login_user.Text + "5.db");
+                                            }
+                                            else
+                                            {
+                                                File.Copy(login_user.Text + "4.db", login_user.Text + "5.db");
+                                            }
+                                            File.Delete(login_user.Text + "4.db");
+                                            File.Copy(login_user.Text + "3.db", login_user.Text + "4.db");
                                         }
                                         else
                                         {
-                                            File.Copy(login_user.Text + "4.db", login_user.Text + "5.db");
+                                            File.Copy(login_user.Text + "3.db", login_user.Text + "4.db");
                                         }
-                                        File.Delete(login_user.Text + "4.db");
-                                        File.Copy(login_user.Text + "3.db", login_user.Text + "4.db");
+                                        File.Delete(login_user.Text + "3.db");
+                                        File.Copy(login_user.Text + "2.db", login_user.Text + "3.db");
                                     }
-                                    else 
+                                    else
                                     {
-                                        File.Copy(login_user.Text + "3.db", login_user.Text + "4.db");
+                                        File.Copy(login_user.Text + "2.db", login_user.Text + "3.db");
                                     }
-                                    File.Delete(login_user.Text + "3.db");
-                                    File.Copy(login_user.Text + "2.db", login_user.Text + "3.db");
+                                    File.Delete(login_user.Text + "2.db");
+                                    File.Copy(login_user.Text + "1.db", login_user.Text + "2.db");
                                 }
                                 else
                                 {
-                                    File.Copy(login_user.Text + "2.db", login_user.Text + "3.db");
+                                    File.Copy(login_user.Text + "1.db", login_user.Text + "2.db");
                                 }
-                                File.Delete(login_user.Text + "2.db");
-                                File.Copy(login_user.Text + "1.db", login_user.Text + "2.db");
+                                File.Delete(login_user.Text + "1.db");
+                                File.Copy(login_user.Text + ".db", login_user.Text + "1.db");
                             }
-                            else
-                            {
-                                File.Copy(login_user.Text + "1.db", login_user.Text + "2.db");
-                            }
-                            File.Delete(login_user.Text + "1.db");
-                            File.Copy(login_user.Text + ".db", login_user.Text + "1.db");
                         }
                         else
                         {
@@ -175,6 +180,7 @@ namespace PasswordManager
                         }
 
 
+                        loginTimeFail = 0;
                         this.Visibility = Visibility.Hidden;
                         Window1 win1 = new Window1(login_user.Text + ".db", password_box);
                         win1.ShowDialog();

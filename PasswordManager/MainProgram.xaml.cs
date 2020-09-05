@@ -586,17 +586,23 @@ namespace PasswordManager
 
         private void Button_Backup(object sender, RoutedEventArgs e)
         {
-            Window9 win9 = new Window9();
+            string name = login;
+            if (name.Contains("."))
+            {
+                name = name.Remove(name.IndexOf("."), name.Length - name.IndexOf("."));
+            }
+            Window9 win9 = new Window9(name);
             win9.ShowDialog();
             if (win9.succesfull==true) 
             {
-                string name = login;
-                if (name.Contains("."))
+                for (int i = 1; i <= 5; i++) 
                 {
-                    name = name.Remove(name.IndexOf("."), name.Length - name.IndexOf("."));
+                    if (File.GetLastWriteTime(name + i.ToString() + ".db").ToString().Equals(win9.choosenBackup) ==true) 
+                    {
+                        File.Delete(login);
+                        File.Copy(name + i.ToString() + ".db", login);
+                    }
                 }
-                File.Delete(login);
-                File.Copy(name + win9.choosenBackup + ".db",login);
                 this.Close();
             }
         }

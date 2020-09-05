@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using MahApps.Metro.Controls;
+using System.IO;
 namespace PasswordManager
 {
     /// <summary>
@@ -21,12 +22,28 @@ namespace PasswordManager
     {
         public bool succesfull = false;
         public string choosenBackup= "";
-        public Window9()
+        public Window9(string login)
         {
             InitializeComponent();
-            for (int i = 1; i <= 5 ; i++)
+            if (File.Exists(login + "1.db"))
             {
-                Combo.Items.Add(i);
+                if (File.Exists(login + "2.db"))
+                {
+                    if (File.Exists(login + "3.db"))
+                    {
+                        if (File.Exists(login + "4.db"))
+                        {
+                            if (File.Exists(login + "5.db"))
+                            {
+                                Combo.Items.Add(File.GetLastWriteTime(login + "5.db").ToString());
+                            }
+                            Combo.Items.Add(File.GetLastWriteTime(login + "4.db").ToString());
+                        }
+                        Combo.Items.Add(File.GetLastWriteTime(login + "3.db").ToString());
+                    }
+                    Combo.Items.Add(File.GetLastWriteTime(login + "2.db").ToString());
+                }
+                Combo.Items.Add(File.GetLastWriteTime(login + "1.db").ToString());
             }
         }
 
