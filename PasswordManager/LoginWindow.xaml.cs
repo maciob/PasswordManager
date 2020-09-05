@@ -130,10 +130,8 @@ namespace PasswordManager
                     {
                         if (File.Exists(login_user.Text + "1.db"))
                         {
-                            Console.WriteLine("Byłem tu");
                             if (File.GetLastWriteTime(login_user.Text + ".db").ToString().Equals(File.GetLastWriteTime(login_user.Text + "1.db").ToString())==false)
                             {
-                                Console.WriteLine("Byłem i tu");
                                 if (File.Exists(login_user.Text + "2.db"))
                                 {
                                     if (File.Exists(login_user.Text + "3.db"))
