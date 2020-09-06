@@ -132,52 +132,17 @@ namespace PasswordManager
                         {
                             if (File.GetLastWriteTime(login_user.Text + ".db").ToString().Equals(File.GetLastWriteTime(login_user.Text + "1.db").ToString())==false)
                             {
-                                if (File.Exists(login_user.Text + "2.db"))
-                                {
-                                    if (File.Exists(login_user.Text + "3.db"))
-                                    {
-                                        if (File.Exists(login_user.Text + "4.db"))
-                                        {
-                                            if (File.Exists(login_user.Text + "5.db"))
-                                            {
-                                                File.Delete(login_user.Text + "5.db");
-                                                File.Copy(login_user.Text + "4.db", login_user.Text + "5.db");
-                                            }
-                                            else
-                                            {
-                                                File.Copy(login_user.Text + "4.db", login_user.Text + "5.db");
-                                            }
-                                            File.Delete(login_user.Text + "4.db");
-                                            File.Copy(login_user.Text + "3.db", login_user.Text + "4.db");
-                                        }
-                                        else
-                                        {
-                                            File.Copy(login_user.Text + "3.db", login_user.Text + "4.db");
-                                        }
-                                        File.Delete(login_user.Text + "3.db");
-                                        File.Copy(login_user.Text + "2.db", login_user.Text + "3.db");
-                                    }
-                                    else
-                                    {
-                                        File.Copy(login_user.Text + "2.db", login_user.Text + "3.db");
-                                    }
-                                    File.Delete(login_user.Text + "2.db");
-                                    File.Copy(login_user.Text + "1.db", login_user.Text + "2.db");
-                                }
-                                else
-                                {
-                                    File.Copy(login_user.Text + "1.db", login_user.Text + "2.db");
-                                }
-                                File.Delete(login_user.Text + "1.db");
-                                File.Copy(login_user.Text + ".db", login_user.Text + "1.db");
-                            }
+                                switchOfFiles(login_user.Text + "4.db", login_user.Text + "5.db");
+                                switchOfFiles(login_user.Text + "3.db", login_user.Text + "4.db");
+                                switchOfFiles(login_user.Text + "2.db", login_user.Text + "3.db");
+                                switchOfFiles(login_user.Text + "1.db", login_user.Text + "2.db");
+                                switchOfFiles(login_user.Text + ".db", login_user.Text + "1.db");
+                             }
                         }
                         else
                         {
                             File.Copy(login_user.Text + ".db", login_user.Text + "1.db");
                         }
-
-
                         loginTimeFail = 0;
                         this.Visibility = Visibility.Hidden;
                         Window1 win1 = new Window1(login_user.Text + ".db", password_box);
@@ -313,5 +278,18 @@ namespace PasswordManager
             }
             return isSQLInjection;
         }
+        public static void switchOfFiles(string firstFile, string secondFile) 
+        {
+            if (File.Exists(firstFile) == true&&File.Exists(secondFile) == true) 
+            {
+                File.Delete(secondFile);
+                File.Copy(firstFile, secondFile);
+            }
+            if (File.Exists(firstFile) == true&&File.Exists(secondFile) == false) 
+            {
+                File.Copy(firstFile, secondFile);
+            }
+        }
+
     }
 }

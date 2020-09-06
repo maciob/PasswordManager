@@ -94,7 +94,7 @@ namespace PasswordManager
         {
             while (deleteFlag == false)
             {
-                if (File.Exists(OneTimePassword) && FileInUse(OneTimePassword) ==false)
+                if (File.Exists(OneTimePassword) == true && FileInUse(OneTimePassword) ==false)
                 {
                     timer.Stop();
                     deleteFlag = true;
@@ -108,9 +108,7 @@ namespace PasswordManager
                     }
                 }
             }
-
             deleteFlag = false;
-
             try
             {
                 FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://192.168.1.34/" + OneTimePassword);//delete
