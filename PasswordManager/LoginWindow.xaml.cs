@@ -13,49 +13,49 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Security.Cryptography;
 using System.Diagnostics;
 using SQLite;
 using MahApps.Metro.Controls;
 using System.Windows.Threading;
+using System.Net;
+using MimeKit;
+using MailKit.Net.Smtp;
 
 namespace PasswordManager
 {
 
     public partial class MainWindow : MetroWindow
     {
+
         public MainWindow()
         {
             InitializeComponent();
+            
+            tp = new GoogleTOTP();
+            timer1 = new DispatcherTimer();
+            timer1.Start();
+            timer1.Tick += new EventHandler(timer1_Tick);
         }
+
         ~MainWindow()
         {
 
         }
-        public class Website
-        {
-            [PrimaryKey, AutoIncrement]
-            public int ID { get; set; }
-            [Indexed]
-            public string Website_name { get; set; }
-            public string Website_address { get; set; }
-            public string Login { get; set; }
-            public string Password { get; set; }
-            public string Date { get; set; }
-        }
-
+        
         private int loginTimeFail = 0;
         int time_ammount = 60;
         TimeSpan time;
         DispatcherTimer timer;
+        DispatcherTimer timer1;
         bool isOnTimer = false;
+        GoogleTOTP tp;
+        private long lastInterval;
+        int maxBackup = 0;
 
         private void Button_Login(object sender, RoutedEventArgs e)
         {
 
-            if (File.Exists("temp.db")&&FileInUse("temp.db")==false)
-            {
-                File.Delete("temp.db");
-            }
             if (password_text.Visibility != Visibility.Collapsed)
             {
                 password_box.Password = password_text.Text;
@@ -64,93 +64,165 @@ namespace PasswordManager
             {
                 if (File.Exists(login_user.Text + ".db"))
                 {
-                    Process p = new Process();
-                    ProcessStartInfo info = new ProcessStartInfo();
-                    info.FileName = "cmd.exe";
-                    info.RedirectStandardInput = true;
-                    info.RedirectStandardOutput = true;
-                    info.RedirectStandardError = true;
-                    info.UseShellExecute = false;
-                    info.CreateNoWindow = true;
-                    p.StartInfo = info;
-                    p.Start();
-
-                    if (checkForSQLInjection(login_user.Text) == false && checkForSQLInjection(password_box.Password.ToString()) == false)
+                    var db = new SQLiteConnection(login_user.Text + ".db");
+                    var query = db.Table<DataStructures.Account>();
+                    foreach (var account in query)
                     {
-                        using (StreamWriter sw = p.StandardInput)
+                        if (AES.Decrypt(account.Password, password_box.Password.ToString(), "PasswordManager") != password_box.Password.ToString())
                         {
-                            if (sw.BaseStream.CanWrite)
+                            if (isOnTimer == false && loginTimeFail >= 2)
                             {
-                                sw.WriteLine("sqlite3 {0}.db", login_user.Text);
-                                sw.WriteLine("PRAGMA key = '{0}';", password_box.Password.ToString());
-                                sw.WriteLine("SELECT * FROM Website;");
+                                isOnTimer = true;
+                                time = TimeSpan.FromSeconds(time_ammount);
+                                timer = new DispatcherTimer(new TimeSpan(0, 0, 1), DispatcherPriority.Normal, delegate
+                                {
+                                    if (time == TimeSpan.Zero)
+                                    {
+                                        timer.Stop();
+                                        isOnTimer = false;
+                                    }
+                                    time = time.Add(TimeSpan.FromSeconds(-1));
+                                }, Application.Current.Dispatcher);
+
+                                Window2 win2 = new Window2();
+                                win2.Title = "Error";
+                                win2.Error.Content = "You have entered your password or account name incorrectly.\nPlease check your password and account name and try again\nin 1 minute.";
+                                win2.ShowDialog();
+                            }
+                            else
+                            {
+                                Window2 win2 = new Window2();
+                                win2.Title = "Error";
+                                win2.Error.Content = "You have entered your password or account name incorrectly.\nPlease check your password and account name and try again.";
+                                win2.ShowDialog();
+                            }
+                            loginTimeFail++;
+                        }
+                        else 
+                        {
+                            var query2 = db.Table<DataStructures.Backup>();
+
+                            foreach (var version in query2)
+                            {
+                                if (maxBackup < version.ID)
+                                {
+                                     maxBackup = version.ID;
+                                }
+                            }
+                            if (maxBackup != 0) 
+                            {
+                                var query3 = db.Table<DataStructures.Website>().Where(v => v.BackupID.Equals(maxBackup));
+
+                                foreach(var website in query3)
+                                {
+                                    website.BackupID = maxBackup + 1;
+                                    db.Insert(website);
+                                }
+                                var backup = new DataStructures.Backup
+                                {
+                                    ID = maxBackup + 1,
+                                    Date = DateTime.Now.ToString()
+                                };
+                                db.Insert(backup);
+                            }
+                            var query4 = db.Table<DataStructures.Account>();
+                            foreach (var account2 in query4) 
+                            {
+                                if (AES.Decrypt(account2.Email, password_box.Password.ToString(), "PasswordManager") != "") 
+                                {
+                                    Window11 win11 = new Window11();
+                                    win11.Mode.Content = "Enter OTP sent to your email.";
+                                    var message = new MimeMessage();
+                                    message.From.Add(new MailboxAddress("PasswordManager", "mbekasinzynierka@gmail.com"));
+                                    message.To.Add(new MailboxAddress(login_user.Text, AES.Decrypt(account2.Email, password_box.Password.ToString(), "PasswordManager")));
+                                    message.Subject = "PasswordManager OTP";
+
+                                    Window5 win5 = new Window5(10, 0, 1, 0, 1, true);
+                                    string OTP = win5.Generate();
+                                    message.Body = new TextPart("plain")
+                                    {
+                                        Text = @"Your OTP for password manager is: " + OTP
+                                    };
+                                    win5.Close();
+                                    using (var client = new SmtpClient())
+                                    {
+                                        client.Connect("smtp.gmail.com", 587);
+                                        client.AuthenticationMechanisms.Remove("XOAUTH2");
+                                        client.Authenticate("mbekasinzynierka@gmail.com", "PracaInzynierska12");
+                                        client.Send(message);
+                                        client.Disconnect(true);
+                                    }
+                                    win11.OTP.Text = "";
+                                    win11.ShowDialog();
+                                    if (OTP == win11.OTP.Text)
+                                    {
+                                        loginTimeFail = 0;
+                                        this.Visibility = Visibility.Hidden;
+                                        Window1 win1 = new Window1(login_user.Text + ".db", password_box, AES.Decrypt(account.Email, password_box.Password.ToString(), "PasswordManager"));
+                                        db.Close();
+                                        win1.ShowDialog();
+                                        this.login_user.Text = "";
+                                        this.password_box.Clear();
+                                        this.password_text.Text = "";
+                                        this.Visibility = Visibility.Visible;
+                                    }
+                                    else
+                                    {
+                                        Window2 win2 = new Window2();
+                                        win2.Title = "Error";
+                                        win2.Error.Content = "You have entered your OTP incorrectly.\nPlease check your OTP and try again.";
+                                        win2.ShowDialog();
+                                    }
+                                }
+                                else if(AES.Decrypt(account2.Code, password_box.Password.ToString(), "PasswordManager") != "") 
+                                {
+                                    Window11 win11 = new Window11();
+                                    byte [] b = new byte[10];
+                                    string[] subs = AES.Decrypt(account2.Code, password_box.Password.ToString(), "PasswordManager").Split(' ');
+                                    int i = 0;
+                                    foreach (var sub in subs)
+                                    {
+                                        if (i == 10) break;
+                                        b[i] = Convert.ToByte(Convert.ToInt32(sub));
+                                        i++;
+                                    }
+                                    win11.Mode.Content = "Enter OTP generated in Google Authenticator app.";
+                                    win11.OTP.Text = "";
+                                    win11.ShowDialog();
+                                    if (tp.generateResponseCode(tp.getCurrentInterval(), b) == win11.OTP.Text)
+                                    {
+                                        loginTimeFail = 0;
+                                        this.Visibility = Visibility.Hidden;
+                                        Window1 win1 = new Window1(login_user.Text + ".db", password_box, AES.Decrypt(account.Email, password_box.Password.ToString(), "PasswordManager"));
+                                        db.Close();
+                                        win1.ShowDialog();
+                                        this.login_user.Text = "";
+                                        this.password_box.Clear();
+                                        this.password_text.Text = "";
+                                        this.Visibility = Visibility.Visible;
+                                    }
+                                    else
+                                    {
+                                        Window2 win2 = new Window2();
+                                        win2.Title = "Error";
+                                        win2.Error.Content = "You have entered your OTP incorrectly.\nPlease check your OTP and try again.";
+                                        win2.ShowDialog();
+                                    }
+                                }
+                                if (AES.Decrypt(account2.Code, password_box.Password.ToString(), "PasswordManager") == "" && AES.Decrypt(account2.Email, password_box.Password.ToString(), "PasswordManager") == "")
+                                { 
+                                    loginTimeFail = 0;
+                                    this.Visibility = Visibility.Hidden;
+                                    Window1 win1 = new Window1(login_user.Text + ".db", password_box, AES.Decrypt(account.Email, password_box.Password.ToString(), "PasswordManager"));
+                                    db.Close();
+                                    win1.ShowDialog();
+                                    this.login_user.Text = "";
+                                    this.password_box.Clear();
+                                    this.password_text.Text = "";
+                                    this.Visibility = Visibility.Visible;
+                                }
                             }
                         }
-                    }
-                    else
-                    {
-                        loginTimeFail++;
-                        Window2 win2 = new Window2();
-                        win2.Title = "Error";
-                        win2.Error.Content = "Are you trying out SQLInjection? Try again.";
-                        win2.ShowDialog();
-                    }
-
-                    if (p.StandardError.ReadToEnd() != "")
-                    {
-                        if (isOnTimer == false && loginTimeFail >= 2)
-                        {
-                            isOnTimer = true;
-                            time = TimeSpan.FromSeconds(time_ammount);
-                            timer = new DispatcherTimer(new TimeSpan(0, 0, 1), DispatcherPriority.Normal, delegate
-                            {
-                                if (time == TimeSpan.Zero)
-                                {
-                                    timer.Stop();
-                                    isOnTimer = false;
-                                }
-                                time = time.Add(TimeSpan.FromSeconds(-1));
-                            }, Application.Current.Dispatcher);
-
-                            Window2 win2 = new Window2();
-                            win2.Title = "Error";
-                            win2.Error.Content = "You have entered your password or account name incorrectly.\nPlease check your password and account name and try again\nin 1 minute.";
-                            win2.ShowDialog();
-                        }
-                        else
-                        {
-                            Window2 win2 = new Window2();
-                            win2.Title = "Error";
-                            win2.Error.Content = "You have entered your password or account name incorrectly.\nPlease check your password and account name and try again.";
-                            win2.ShowDialog();
-                        }
-                        loginTimeFail++;
-                    }
-                    else
-                    {
-                        if (File.Exists(login_user.Text + "1.db"))
-                        {
-                            if (File.GetLastWriteTime(login_user.Text + ".db").ToString().Equals(File.GetLastWriteTime(login_user.Text + "1.db").ToString())==false)
-                            {
-                                switchOfFiles(login_user.Text + "4.db", login_user.Text + "5.db");
-                                switchOfFiles(login_user.Text + "3.db", login_user.Text + "4.db");
-                                switchOfFiles(login_user.Text + "2.db", login_user.Text + "3.db");
-                                switchOfFiles(login_user.Text + "1.db", login_user.Text + "2.db");
-                                switchOfFiles(login_user.Text + ".db", login_user.Text + "1.db");
-                             }
-                        }
-                        else
-                        {
-                            File.Copy(login_user.Text + ".db", login_user.Text + "1.db");
-                        }
-                        loginTimeFail = 0;
-                        this.Visibility = Visibility.Hidden;
-                        Window1 win1 = new Window1(login_user.Text + ".db", password_box);
-                        win1.ShowDialog();
-                        this.login_user.Text = "";
-                        this.password_box.Clear();
-                        this.password_text.Text = "";
-                        this.Visibility = Visibility.Visible;
                     }
                 }
                 else
@@ -197,39 +269,54 @@ namespace PasswordManager
                 }
                 else
                 {
-                    var db = new SQLiteConnection("temp.db");
-                    db.CreateTable<Website>();
-
-                    Process p = new Process();
-                    ProcessStartInfo info = new ProcessStartInfo();
-                    info.FileName = "cmd.exe";
-                    info.RedirectStandardInput = true;
-                    info.UseShellExecute = false;
-                    info.CreateNoWindow = true;
-                    p.StartInfo = info;
-                    p.Start();
-
-                    if (checkForSQLInjection(login_user.Text) == false && checkForSQLInjection(password_box.Password.ToString()) == false)
+                    
+                    if (win6.Flag_TwoFA == true && win6.Flag_GoogleAuthenticator == true)
                     {
-                        using (StreamWriter sw = p.StandardInput)
+                        Window10 win10 = new Window10();
+                        string randomString = Transcoder.Base32Encode(tp.randomBytes);
+
+                        string ProvisionUrl = tp.UrlEncode(String.Format("otpauth://totp/{0}?secret={1}", "PasswordManager", randomString));
+                        string url = String.Format("http://chart.apis.google.com/chart?cht=qr&chs={0}x{1}&chl={2}", 200, 200, ProvisionUrl);
+
+                        WebClient wc = new WebClient();
+                        var data = wc.DownloadData(url);
+
+                        BitmapImage bitmap = new BitmapImage();
+                        bitmap.BeginInit();
+                        bitmap.StreamSource = new MemoryStream(data);
+                        bitmap.EndInit();
+                        win10.QRcode.Source = bitmap;
+                        win10.CodeLabel.Content = "Your code:\n " + tp.getPrivateKey(tp.randomBytes);
+                        win10.ShowDialog();
+                    }
+                    var db = new SQLiteConnection(win6.Login.Text + ".db");
+                    db.CreateTable<DataStructures.Website>();
+                    db.CreateTable<DataStructures.Backup>();
+                    db.CreateTable<DataStructures.Account>();
+
+                    db.Execute("SELECT Website.BackupID, Backup.ID FROM Website INNER JOIN Backup ON Website.BackupID = Backup.ID");
+                    string builder = "";
+                    if (win6.Flag_GoogleAuthenticator == true) 
+                    {
+                        foreach (byte b in tp.randomBytes)
                         {
-                            if (sw.BaseStream.CanWrite)
-                            {
-                                sw.WriteLine("sqlite3 temp.db");
-                                sw.WriteLine("ATTACH DATABASE '{0}.db' AS encrypted KEY '{1}';", win6.Login.Text, win6.Password_Box.Password.ToString());
-                                sw.WriteLine("SELECT sqlcipher_export('encrypted');");
-                                sw.WriteLine("DETACH DATABASE encrypted;");
-                                sw.WriteLine(".quit");
-                            }
+                            builder = builder + b + " ";
                         }
                     }
-                    else
+
+                    DataStructures.Account account = new DataStructures.Account
                     {
-                        Window2 win2 = new Window2();
-                        win2.Title = "Error";
-                        win2.Error.Content = "Are you trying out SQLInjection? Try again.";
-                        win2.ShowDialog();
-                    }
+                        Password = AES.Encrypt(win6.Password_Box.Password.ToString(), win6.Password_Box.Password.ToString(), "PasswordManager"),
+                        Email = AES.Encrypt(win6.Email.Text, win6.Password_Box.Password.ToString(), "PasswordManager"),
+                        Code = AES.Encrypt(builder, win6.Password_Box.Password.ToString(), "PasswordManager"),
+                    };
+                    DataStructures.Backup backup = new DataStructures.Backup
+                    {
+                        ID = 0
+                    };
+                    db.Insert(account);
+                    db.Insert(backup);
+                    db.Close();
                 }
             }
         }
@@ -249,6 +336,7 @@ namespace PasswordManager
                 password_text.Visibility = System.Windows.Visibility.Collapsed;
             }
         }
+
         private bool FileInUse(string path)
         {
             try
@@ -264,6 +352,7 @@ namespace PasswordManager
                 return true;
             }
         }
+
         public static Boolean checkForSQLInjection(string userInput)
         {
             bool isSQLInjection = false;
@@ -278,18 +367,14 @@ namespace PasswordManager
             }
             return isSQLInjection;
         }
-        public static void switchOfFiles(string firstFile, string secondFile) 
+
+        private void timer1_Tick(object sender, EventArgs e)
         {
-            if (File.Exists(firstFile) == true&&File.Exists(secondFile) == true) 
+            long thisInterval = tp.getCurrentInterval();
+            if (lastInterval != thisInterval)
             {
-                File.Delete(secondFile);
-                File.Copy(firstFile, secondFile);
-            }
-            if (File.Exists(firstFile) == true&&File.Exists(secondFile) == false) 
-            {
-                File.Copy(firstFile, secondFile);
+                lastInterval = thisInterval;
             }
         }
-
     }
 }

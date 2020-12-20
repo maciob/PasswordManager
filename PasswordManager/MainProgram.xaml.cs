@@ -37,22 +37,23 @@ namespace PasswordManager
         
         public string login;
         PasswordBox password;
-
+        public string Email;
         bool changedFlag = false;
-
+        public int maxBackup = 0;
         int time_ammount = 300;
         TimeSpan time;
         DispatcherTimer timer;
 
-        public ObservableCollection<WebsiteExpanded> Data { get; private set; } = new ObservableCollection<WebsiteExpanded>();
+        public ObservableCollection<WebsiteExpanded> Data { get; set; } = new ObservableCollection<WebsiteExpanded>();
 
-        public Window1(string user, PasswordBox pass)
+        public Window1(string user, PasswordBox pass,string email)
         {
             InitializeComponent();
             DataContext = this;
             Single_Account.Visibility = Visibility.Hidden;
             login = user;
             password = pass;
+            Email = email;
             Read();
 
             string name = login;
@@ -94,10 +95,7 @@ namespace PasswordManager
             }, Application.Current.Dispatcher);
         }
 
-        ~Window1()
-        {
-
-        }
+        ~Window1() { }
 
         public class WebsiteExpanded
         {
@@ -110,27 +108,50 @@ namespace PasswordManager
             public string Login { get; set; }
             public string Password { get; set; }
             public string Date { get; set; }
-        }
-
-        Process Connect()
-        {
-            Process p = new Process();
-            ProcessStartInfo info = new ProcessStartInfo();
-            info.FileName = "cmd.exe";
-            info.RedirectStandardInput = true;
-            info.RedirectStandardOutput = true;
-            info.UseShellExecute = false;
-            info.CreateNoWindow = true;
-            p.StartInfo = info;
-            p.Start();
-            return p;
+            public int BackupID { get; set; }
         }
 
         private void Read()
         {
-            System.Threading.Thread.Sleep(1000);
-            var con = Connect();
+            var db = new SQLiteConnection(login);
+            var query = db.Table<DataStructures.Backup>();
+            
+            foreach (var version in query) 
+            {
+                if (maxBackup < version.ID) 
+                {
+                    maxBackup = version.ID;
+                }
+            }
+            var query2 = db.Table<DataStructures.Website>().Where(v => v.BackupID.Equals(maxBackup));
 
+            foreach (var website in query2) 
+            {
+                var element = new WebsiteExpanded
+                {
+                    ID = website.ID,
+                    Website_name = AES.Decrypt(website.Website_name, password.Password.ToString(), website.Date),
+                    Website_address = AES.Decrypt(website.Website_address, password.Password.ToString(), website.Date),
+                    Login = AES.Decrypt(website.Login, password.Password.ToString(), website.Date),
+                    Password = AES.Decrypt(website.Password, password.Password.ToString(), website.Date),
+                    Date = website.Date
+                };
+                string path = element.Website_address;
+                path = CharStrip(path);
+                if (File.Exists(path))
+                {
+                    BitmapImage bitmap = new BitmapImage();
+                    bitmap.BeginInit();
+                    bitmap.UriSource = new Uri(path);
+                    bitmap.EndInit();
+                    element.ImageSource = bitmap;
+                }
+                Data.Add(element);
+            }
+            db.Close();
+
+
+            /*
             if (checkForSQLInjection(login) == false && checkForSQLInjection(password.Password.ToString()) == false)
             {
                 using (StreamWriter sw = con.StandardInput)
@@ -151,7 +172,7 @@ namespace PasswordManager
                     var s = line.Split('|');
                     if (Char.IsNumber(s[0], 0))
                     {
-                        var element = new WebsiteExpanded
+                        var element = new DataStructures.WebsiteExpanded
                         {
                             ID = Int32.Parse(s[0]),
                             Website_name = s[1],
@@ -180,8 +201,9 @@ namespace PasswordManager
                 win2.Title = "Error";
                 win2.Error.Content = "Are you trying out SQLInjection?";
                 win2.ShowDialog();
-            }
+            }*/
         }
+
         private string CharStrip(string URL) 
         {
             if (URL.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
@@ -206,7 +228,6 @@ namespace PasswordManager
             Console.WriteLine(URL);
             return URL;
         }
-
 
         private void Button_Gen_Set(object sender, RoutedEventArgs e)
         {
@@ -251,13 +272,25 @@ namespace PasswordManager
             {
                 Add(win5.Name_Of_Website.Text.ToString(), win5.Website.Text.ToString(), win5.Login.Text.ToString(), win5.password_box.Password.ToString(), DateTime.Today.ToString("d"));
             }
-            Data.Clear();
-            Read();
         }
 
         private void Add(string Name, string WebsiteName, string Login, string new_password, string date)
         {
-            var con = Connect();
+            var element = new DataStructures.Website
+            {
+                Website_name = AES.Encrypt(Name, password.Password.ToString(), date),
+                Website_address = AES.Encrypt(WebsiteName, password.Password.ToString(), date),
+                Login = AES.Encrypt(Login, password.Password.ToString(), date),
+                Password = AES.Encrypt(new_password, password.Password.ToString(), date),
+                Date = date,
+                BackupID = maxBackup
+            };
+            var db = new SQLite.SQLiteConnection(login);
+            db.Insert(element);
+            Data.Clear();
+            Read();
+            db.Close();
+            /*var con = Connect();
             if (checkForSQLInjection(Name) == false && checkForSQLInjection(WebsiteName) == false && checkForSQLInjection(Login) == false && checkForSQLInjection(new_password) == false)
             {
                 using (StreamWriter sw = con.StandardInput)
@@ -277,8 +310,9 @@ namespace PasswordManager
                 win2.Title = "Error";
                 win2.Error.Content = "Are you trying out SQLInjection? Try again.";
                 win2.ShowDialog();
-            }
+            }*/
         }
+
         private void Edit(object sender, RoutedEventArgs e)
         {
             if ((WebsiteExpanded)DataGrid.SelectedItem != null)
@@ -293,25 +327,24 @@ namespace PasswordManager
                 win5.ShowDialog();
                 if (win5.succesfull == true)
                 {
-                    if (checkForSQLInjection(win5.Name_Of_Website.Text.ToString()) == false && checkForSQLInjection(win5.Website.Text.ToString()) == false && checkForSQLInjection(win5.Login.Text.ToString()) == false && checkForSQLInjection(win5.password_box.Password.ToString()) == false)
-                    {
-                        var con = Connect();
-                        using (StreamWriter sw = con.StandardInput)
-                        {
-                            if (sw.BaseStream.CanWrite)
-                            {
-                                sw.WriteLine("sqlite3 {0}", login);
-                                sw.WriteLine("PRAGMA key = '{0}';", password.Password.ToString());
-                                sw.WriteLine("UPDATE Website SET Website_name = '{0}', Website_address = '{1}', Login = '{2}', Password = '{3}', Date = '{4}' WHERE ID = {5};", win5.Name_Of_Website.Text.ToString(), win5.Website.Text.ToString(), win5.Login.Text.ToString(), win5.password_box.Password.ToString(), DateTime.Today.ToString("d"), EditedAccount.ID);
-                                sw.WriteLine(".quit");
-                            }
-                        }
-                        Data.Clear();
-                        Read();
-                    }
+                    var db = new SQLiteConnection(login);
+                    db.Execute("UPDATE Website SET Website_name = ?, Website_address = ?, Login = ?, Password = ?, Date = ? WHERE ID = ?",
+                        AES.Encrypt(win5.Name_Of_Website.Text.ToString(),password.Password.ToString(), DateTime.Today.ToString("d")),
+                        AES.Encrypt(win5.Website.Text.ToString(), password.Password.ToString(), DateTime.Today.ToString("d")),
+                        AES.Encrypt(win5.Login.Text.ToString(), password.Password.ToString(), DateTime.Today.ToString("d")),
+                        AES.Encrypt(win5.password_box.Password.ToString(), password.Password.ToString(), DateTime.Today.ToString("d")),
+                        DateTime.Today.ToString("d"),
+                        EditedAccount.ID,
+                        EditedAccount.BackupID
+                    );
+
+                    Data.Clear();
+                    Read();
+                    db.Close();
                 }
             }
         }
+
         private void Edit_Click(object sender, RoutedEventArgs e)
         {
             if ((WebsiteExpanded)DataGrid.SelectedItem != null)
@@ -362,34 +395,12 @@ namespace PasswordManager
             if ((WebsiteExpanded)DataGrid.SelectedItem != null)
             {
                 WebsiteExpanded EditedAccount = (WebsiteExpanded)DataGrid.SelectedItem;
-                Delete_Data(EditedAccount.ID);
+                var db = new SQLiteConnection(login);
+                db.Execute("DELETE FROM Website WHERE ID = ?", EditedAccount.ID);
                 Data.Clear();
                 Read();
+                db.Close();
                 Single_Account.Visibility = Visibility.Hidden;
-            }
-        }
-        private void Delete_Data(int ID)
-        {
-            var con = Connect();
-            if (checkForSQLInjection(login) == false && checkForSQLInjection(password.Password.ToString()) == false)
-            {
-                using (StreamWriter sw = con.StandardInput)
-                {
-                    if (sw.BaseStream.CanWrite)
-                    {
-                        sw.WriteLine("sqlite3 {0}", login);
-                        sw.WriteLine("PRAGMA key = '{0}';", password.Password.ToString());
-                        sw.WriteLine("DELETE FROM Website WHERE ID = '{0}';", ID);
-                        sw.WriteLine(".quit");
-                    }
-                }
-            }
-            else
-            {
-                Window2 win2 = new Window2();
-                win2.Title = "Error";
-                win2.Error.Content = "Are you trying out SQLInjection? Try again.";
-                win2.ShowDialog();
             }
         }
 
@@ -434,14 +445,13 @@ namespace PasswordManager
             win3.ShowDialog();
         }
 
-
         private void AccountSettings_Click(object sender, RoutedEventArgs e)
         {
-            Window8 win8 = new Window8(login);
+            Window8 win8 = new Window8(login, password, Email);
             win8.ShowDialog();
-            if (win8.succesfull==true)  
+            if (win8.succesfull == true)
             {
-                if (win8.LoginChanged == true && win8.PasswordChanged == true) 
+                if (win8.LoginChanged == true)
                 {
                     changedFlag = false;
                     while (changedFlag == false)
@@ -452,100 +462,70 @@ namespace PasswordManager
                             try
                             {
                                 File.Move(login, win8.LoginText.Text + ".db");
+                                //File.Delete(login);
                                 login = win8.LoginText.Text + ".db";
                                 Account.Content = win8.LoginText.Text;
                             }
-                            catch (Exception ex)
-                            {
-                            }
-                        }
-                    }
-                    changedFlag = false;
-                    while (changedFlag == false)
-                    {
-                        if (File.Exists(login) && FileInUse(login) == false)
-                        {
-                            changedFlag = true;
-                            try
-                            {
-                                var con = Connect();
-                                if (checkForSQLInjection(login) == false && checkForSQLInjection(password.Password.ToString()) == false)
-                                {
-                                    using (StreamWriter sw = con.StandardInput)
-                                    {
-                                        if (sw.BaseStream.CanWrite)
-                                        {
-                                            sw.WriteLine("sqlite3 {0}", login);
-                                            sw.WriteLine("PRAGMA key = '{0}';", password.Password.ToString());
-                                            sw.WriteLine("PRAGMA rekey = '{0}';", win8.PasswordBox.Password.ToString());
-                                            sw.WriteLine(".quit");
-                                        }
-                                    }
-                                    password.Password = win8.PasswordBox.Password.ToString();
-                                }
-                                else
-                                {
-                                    Window2 win2 = new Window2();
-                                    win2.Title = "Error";
-                                    win2.Error.Content = "Are you trying out SQLInjection? Try again.";
-                                    win2.ShowDialog();
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                            }
+                            catch (Exception ex) { }
                         }
                     }
                 }
-                if (win8.LoginChanged == true && win8.PasswordChanged == false)
+                System.Threading.Thread.Sleep(1000);
+                changedFlag = false;
+                var db = new SQLiteConnection(login);
+                var query = db.Table<DataStructures.Account>();
+                foreach (var account in query)
                 {
-                    changedFlag = false;
-                    while (changedFlag == false)
+                    if (win8.PasswordChanged == true)
                     {
-                        if (File.Exists(login) && FileInUse(login) == false)
+                        
+                        db.Execute("UPDATE Account SET Password = ? WHERE Password = ?",
+                            AES.Encrypt(win8.PasswordBox.Password.ToString(), win8.PasswordBox.Password.ToString(), "PasswordManager"),
+                            account.Password
+                        );
+                        db.Execute("UPDATE Account SET Email = ? WHERE Email = ?",
+                           AES.Encrypt(Email, win8.PasswordBox.Password.ToString(), "PasswordManager"),
+                           account.Password
+                        );
+                        var query2 = db.Table<DataStructures.Backup>();
+
+                        foreach (var version in query2)
                         {
-                            changedFlag = true;
-                            try
+                            if (version.ID == maxBackup)
                             {
-                                File.Move(login, win8.LoginText.Text + ".db");
-                                login = win8.LoginText.Text + ".db";
-                                Account.Content = win8.LoginText.Text;
-                            }
-                            catch (Exception ex)
-                            {
-                            }
-                        }
-                    }
-                }
-                if (win8.LoginChanged == false && win8.PasswordChanged == true)
-                {
-                    changedFlag = false;
-                    while (changedFlag == false)
-                    {
-                        if (File.Exists(login) && FileInUse(login) == false)
-                        {
-                            Console.WriteLine(win8.PasswordBox.Password.ToString());
-                            changedFlag = true;
-                            try
-                            {
-                                var con = Connect();
-                                using (StreamWriter sw = con.StandardInput)
+                                var query3 = db.Table<DataStructures.Website>().Where(v => v.BackupID.Equals(version.ID));
+                                foreach (var website in query3)
                                 {
-                                    if (sw.BaseStream.CanWrite)
-                                    {
-                                        sw.WriteLine("sqlite3 {0}", login);
-                                        sw.WriteLine("PRAGMA key = '{0}';", password.Password.ToString());
-                                        sw.WriteLine("PRAGMA rekey = '{0}';", win8.PasswordBox.Password.ToString());
-                                        sw.WriteLine(".quit");
-                                    }
+                                    website.Login = AES.Encrypt(AES.Decrypt(website.Login, password.Password.ToString(), website.Date), win8.PasswordBox.Password.ToString(), website.Date);
+                                    website.Password = AES.Encrypt(AES.Decrypt(website.Password, password.Password.ToString(), website.Date), win8.PasswordBox.Password.ToString(), website.Date);
+                                    website.Website_address = AES.Encrypt(AES.Decrypt(website.Website_address, password.Password.ToString(), website.Date), win8.PasswordBox.Password.ToString(), website.Date);
+                                    website.Website_name = AES.Encrypt(AES.Decrypt(website.Website_name, password.Password.ToString(), website.Date), win8.PasswordBox.Password.ToString(), website.Date);
+                                    website.BackupID = maxBackup + 1;
+                                    db.Insert(website);
                                 }
+                                version.ID = maxBackup + 1;
+                                version.Date = DateTime.Now.ToString();
+                                db.Insert(version);
+                                changedFlag = true;
                                 password.Password = win8.PasswordBox.Password.ToString();
                             }
-                            catch (Exception ex)
-                            {
-
-                            }
                         }
+                    }
+
+                    if (win8.EmailChanged == true)
+                    {
+                        db.Execute("UPDATE Account SET Email = ? WHERE Email = ?",
+                            AES.Encrypt(win8.EmailText.Text, password.Password.ToString(), "PasswordManager"),
+                            account.Email
+                        );
+                        Email = win8.EmailText.Text;
+                    }
+
+                    db.Close();
+                    
+                    if (changedFlag == true) 
+                    {
+                        this.Close();
                     }
                 }
             }
@@ -553,6 +533,7 @@ namespace PasswordManager
 
         private void NewAccount_Click(object sender, RoutedEventArgs e)
         {
+
             Window5 win5 = new Window5(0,0,0,0,0,false);
             win5.Title = "New Account";
             win5.ShowDialog();
@@ -560,14 +541,13 @@ namespace PasswordManager
             {
                 Add(win5.Name_Of_Website.Text.ToString(), win5.Website.Text.ToString(), win5.Login.Text.ToString(), win5.password_box.Password.ToString(), DateTime.Today.ToString("d"));
             }
-            Data.Clear();
-            Read();
         }
 
         private void Button_Logout(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
+
         private bool FileInUse(string path)
         {
             try
@@ -586,24 +566,30 @@ namespace PasswordManager
 
         private void Button_Backup(object sender, RoutedEventArgs e)
         {
-            string name = login;
-            if (name.Contains("."))
-            {
-                name = name.Remove(name.IndexOf("."), name.Length - name.IndexOf("."));
-            }
-            Window9 win9 = new Window9(name);
+            Window9 win9 = new Window9(login);
             win9.ShowDialog();
             if (win9.succesfull==true) 
             {
-                for (int i = 1; i <= 5; i++) 
+                var db = new SQLite.SQLiteConnection(login);
+                var query = db.Table<DataStructures.Backup>();
+
+                foreach (var version in query)
                 {
-                    if (File.GetLastWriteTime(name + i.ToString() + ".db").ToString().Equals(win9.choosenBackup) ==true) 
+                    if (version.ID==win9.choosenBackup)
                     {
-                        File.Delete(login);
-                        File.Copy(name + i.ToString() + ".db", login);
+                        var query2 = db.Table<DataStructures.Website>().Where(v => v.BackupID.Equals(version.ID));
+                        foreach (var website in query2)
+                        {
+                            website.BackupID = maxBackup + 1;
+                            db.Insert(website);
+                        }
+                        version.ID = maxBackup + 1;
+                        version.Date = DateTime.Now.ToString();
+                        db.Insert(version);
+                        db.Close();
+                        this.Close();
                     }
                 }
-                this.Close();
             }
         }
 
@@ -621,7 +607,6 @@ namespace PasswordManager
             }
             return isSQLInjection;
         }
-
 
     }
 }

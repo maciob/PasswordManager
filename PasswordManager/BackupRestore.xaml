@@ -10,7 +10,7 @@
     <Grid>
         <GroupBox Header="">
             <Grid>
-                <Label Content="Choose which buckup file, you want to restore, by &#xD;&#xA;choosing the date of last modification of existing&#xD;&#xA;backups.&#xD;&#xA;This decision has no return.&#xD;&#xA;Click OK if you want to restore the backup file or&#xD;&#xA;click CANCEL if you don't want to.&#xD;&#xA;If you click OK you will be asked to log into your &#xD;&#xA;account." HorizontalAlignment="Left" Height="154" VerticalAlignment="Top" Width="284" />
+                <Label Content="Choose which backup file, you want to restore, by &#xD;&#xA;choosing the date of last modification of existing&#xD;&#xA;backups.&#xD;&#xA;This decision has no return.&#xD;&#xA;Click OK if you want to restore the backup file or&#xD;&#xA;click CANCEL if you don't want to.&#xD;&#xA;If you click OK you will be asked to log into your &#xD;&#xA;account." HorizontalAlignment="Left" Height="154" VerticalAlignment="Top" Width="284" />
                 <Button Content="OK" HorizontalAlignment="Left" Margin="34,199,0,0" VerticalAlignment="Top" Width="75" Click="Button_OK"/>
                 <Button Content="Cancel" HorizontalAlignment="Right" Margin="0,199,34,0" VerticalAlignment="Top" Width="75" Click="Button_Cancel"/>
                 <ComboBox Name="Combo" HorizontalAlignment="Left" Margin="75,128,0,0" VerticalAlignment="Top" Width="120" RenderTransformOrigin="0.509,1.283"/>

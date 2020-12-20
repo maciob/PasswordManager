@@ -38,7 +38,7 @@ namespace PasswordManager
                     try
                     {
                         WebClient client = new WebClient();
-                        client.DownloadFile("ftp://192.168.1.34/" + OTP.Text + ".db", Username.Text + ".db"); //download
+                        client.DownloadFile("ftp://25.151.157.146/" + OTP.Text + ".db", Username.Text + ".db"); //download
                     }
                     catch (Exception ex)
                     {
@@ -68,7 +68,7 @@ namespace PasswordManager
             }
             if (unsuccessfull == false) 
             {
-                FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://192.168.1.34/" + OTP.Text + ".db");//delete
+                FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://25.151.157.146/" + OTP.Text + ".db");//delete
                 request.Method = WebRequestMethods.Ftp.DeleteFile;
                 FtpWebResponse response = (FtpWebResponse)request.GetResponse();
                 Window2 win2 = new Window2();
@@ -83,6 +83,11 @@ namespace PasswordManager
         private void Button_Cancel(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

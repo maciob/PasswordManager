@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using MahApps.Metro.Controls;
 using System.IO;
+using SQLite;
 namespace PasswordManager
 {
     /// <summary>
@@ -21,38 +22,30 @@ namespace PasswordManager
     public partial class Window9 : MetroWindow
     {
         public bool succesfull = false;
-        public string choosenBackup= "";
+        public int choosenBackup;
+        public string name;
         public Window9(string login)
         {
             InitializeComponent();
-            if (File.Exists(login + "1.db"))
+            var db = new SQLiteConnection(login);
+            var query = db.Table<DataStructures.Backup>();
+            foreach (var backup in query) 
             {
-                if (File.Exists(login + "2.db"))
-                {
-                    if (File.Exists(login + "3.db"))
-                    {
-                        if (File.Exists(login + "4.db"))
-                        {
-                            if (File.Exists(login + "5.db"))
-                            {
-                                Combo.Items.Add(File.GetLastWriteTime(login + "5.db").ToString());
-                            }
-                            Combo.Items.Add(File.GetLastWriteTime(login + "4.db").ToString());
-                        }
-                        Combo.Items.Add(File.GetLastWriteTime(login + "3.db").ToString());
-                    }
-                    Combo.Items.Add(File.GetLastWriteTime(login + "2.db").ToString());
-                }
-                Combo.Items.Add(File.GetLastWriteTime(login + "1.db").ToString());
+                Combo.Items.Add(backup.Date);
             }
+            name = login;
         }
-
+        
         private void Button_OK(object sender, RoutedEventArgs e)
         {
             if (Combo.SelectedItem != null)
-            {
+            {   
                 succesfull = true;
-                choosenBackup = Combo.SelectedItem.ToString();
+                var db = new SQLiteConnection(name);
+                var query = db.Table<DataStructures.Backup>();
+                foreach (var backup in query)
+                    if(Combo.SelectedItem.ToString()==backup.Date)
+                        choosenBackup = backup.ID;
                 this.Close();
             }
             else 
