@@ -6,15 +6,20 @@
         xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:local="clr-namespace:PasswordManager"
         mc:Ignorable="d"
-        Title="Account Creator" Height="192" Width="370" ResizeMode="NoResize">
+        Title="Account Creator" Height="226.718" Width="370" ResizeMode="NoResize">
     <Grid>
-        <Label Content="Name" HorizontalAlignment="Left" Margin="25,21,0,0" VerticalAlignment="Top"/>
-        <Label Content="Password" HorizontalAlignment="Left" Margin="25,62,0,0" VerticalAlignment="Top"/>
-        <Button Content="Create account" HorizontalAlignment="Left" Margin="103,114,0,0" VerticalAlignment="Top" Width="100" Click="Button_Create_Account"/>
-        <Button Content="Cancel" HorizontalAlignment="Left" Margin="208,114,0,0" VerticalAlignment="Top" Width="90" Click="Button_Cancel"/>
-        <TextBox HorizontalAlignment="Left" Height="22" Margin="103,25,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="195" Name="Login"/>
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="103,65,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="222" Name="Password_Text" Visibility="Collapsed"/>
-        <PasswordBox HorizontalAlignment="Left" Height="23" Margin="103,65,0,0" VerticalAlignment="Top" Width="195" Name="Password_Box"/>
-        <Button Content="Show" Margin="303,66,5,0" VerticalAlignment="Top" Height="15" RenderTransformOrigin="0.967,0.722" Click="Button_Click"/>
+        <Label Content="Name" HorizontalAlignment="Left" Margin="25,10,0,0" VerticalAlignment="Top"/>
+        <Label Content="Password" HorizontalAlignment="Left" Margin="25,41,0,0" VerticalAlignment="Top"/>
+        <Button Content="Create account" HorizontalAlignment="Left" Margin="103,152,0,0" VerticalAlignment="Top" Width="100" Click="Button_Create_Account"/>
+        <Button Content="Cancel" HorizontalAlignment="Left" Margin="208,152,0,0" VerticalAlignment="Top" Width="90" Click="Button_Cancel"/>
+        <TextBox HorizontalAlignment="Left" Height="22" Margin="103,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="195" Name="Login"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="103,41,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="195" Name="Password_Text" Visibility="Collapsed"/>
+        <PasswordBox HorizontalAlignment="Left" Height="23" Margin="103,41,0,0" VerticalAlignment="Top" Width="195" Name="Password_Box"/>
+        <Button Content="Show" Margin="303,42,5,0" VerticalAlignment="Top" Height="15" RenderTransformOrigin="0.967,0.722" Click="Button_Click"/>
+        <Label Name="EmailLabel" Content="Email" HorizontalAlignment="Left" Margin="25,103,0,0" VerticalAlignment="Top" Visibility="Hidden"/>
+        <TextBox HorizontalAlignment="Left" Height="22" Margin="103,103,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="195" x:Name="Email" Visibility="Hidden"/>
+        <CheckBox Content="2FA" HorizontalAlignment="Left" Margin="31,72,0,0" VerticalAlignment="Top" Height="26" Checked="Checked_2FA" Unchecked="Unchecked_2FA"/>
+        <CheckBox Name="EmailCheck" Content="Email" HorizontalAlignment="Left" Margin="128,72,0,0" VerticalAlignment="Top" Height="26" Checked="Checked_Email" Unchecked="Unchecked_Email" Visibility="Hidden"/>
+        <CheckBox Name="GoogleCheck" Content="Google Authenticator" HorizontalAlignment="Left" Margin="216,72,0,0" VerticalAlignment="Top" Height="26" Checked="Checked_GoogleAuthenticator" Unchecked="Unchecked_GoogleAuthenticator" Visibility="Hidden"/>
     </Grid>
 </mah:MetroWindow>

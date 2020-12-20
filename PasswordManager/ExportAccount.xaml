@@ -6,7 +6,7 @@
         xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:local="clr-namespace:PasswordManager"
         mc:Ignorable="d"
-        Title="Share database via internet to another device" Height="192" Width="370" ResizeMode="NoResize">
+        Title="Share database" Height="192" Width="370" ResizeMode="NoResize">
     <Grid>
         <Grid>
             <Label Content="Generated OTP" HorizontalAlignment="Left" Margin="20,27,0,0" VerticalAlignment="Top" Width="135"/>

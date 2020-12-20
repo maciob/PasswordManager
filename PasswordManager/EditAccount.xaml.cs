@@ -13,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using SQLite;
 
 namespace PasswordManager
 {
@@ -21,13 +22,16 @@ namespace PasswordManager
     /// </summary>
     public partial class Window8 : MetroWindow
     {
-        public bool succesfull = false;
         string login;
+        public bool succesfull = false;
         public bool LoginChanged = false;
         public bool PasswordChanged = false;
+        public bool EmailChanged = false;
+        string email;
         bool error = false;
+        PasswordBox pass;
 
-        public Window8(string user)
+        public Window8(string user, PasswordBox password, string Email)
         {
             InitializeComponent();
             if (user.Contains("."))
@@ -36,7 +40,10 @@ namespace PasswordManager
             }
             LoginLabel.Content = user;
             PasswordLabel.Content = "********";
+            EmailLabel.Content = Email;
             login = user;
+            pass = password;
+            email = Email;
         }
 
         private void Button_Save(object sender, RoutedEventArgs e)
@@ -58,11 +65,36 @@ namespace PasswordManager
                 }
             }
 
+            if (EmailText.Visibility == Visibility.Visible)
+            {
+                    if (EmailText.Text != email)
+                    {
+                        EmailChanged = true;
+                        succesfull = true;
+                    }
+                    else
+                    {
+                        error = true;
+                        Window2 win2 = new Window2();
+                        win2.Title = "Error";
+                        win2.Error.Content = "Your email must be different than original";
+                        win2.ShowDialog();
+                    }
+            }
+
+
             //Checking if new password is legit
             if (PasswordBox.Visibility == Visibility.Visible || PasswordText.Visibility == Visibility.Visible)
             {
+                if (PasswordText.Visibility != Visibility.Hidden)
+                {
+                    PasswordBox.Password = PasswordText.Text;
+                    PasswordBox.Visibility = Visibility.Visible;
+                    PasswordText.Visibility = Visibility.Hidden;
+                }
+
                 Window5 win5 = new Window5(0, 0, 0, 0, 0, false);
-                if (win5.Check(PasswordBox.Password.ToString(), 1, 1, 1, 1) == true && PasswordBox.Password.Length > 8)
+                if (win5.Check(PasswordBox.Password.ToString(), 1, 1, 1, 1) == true && PasswordBox.Password.Length >= 8)
                 {
                     PasswordChanged = true;
                     succesfull = true;
@@ -78,7 +110,7 @@ namespace PasswordManager
                 win5.Close();
             }
 
-            if (PasswordLabel.Visibility==Visibility.Visible && LoginLabel.Visibility == Visibility.Visible) 
+            if (PasswordLabel.Visibility==Visibility.Visible && LoginLabel.Visibility == Visibility.Visible && EmailLabel.Visibility == Visibility.Visible) 
             {
                 Window2 win2 = new Window2();
                 win2.Title = "Error";
@@ -87,7 +119,7 @@ namespace PasswordManager
                 error = true;
             }
 
-            if ((PasswordChanged == true || LoginChanged == true) && error == false)
+            if ((PasswordChanged == true || LoginChanged == true || EmailChanged == true) && error == false)
             {
                 this.Close();
             }
@@ -95,6 +127,7 @@ namespace PasswordManager
             {
                 error = false;
                 LoginChanged = false;
+                EmailChanged = false;
                 PasswordChanged = false;
                 succesfull = false;
             }
@@ -155,6 +188,22 @@ namespace PasswordManager
                     PasswordText.Visibility = Visibility.Hidden;
                 }
             }
+        }
+
+        private void Button_EditEmail(object sender, RoutedEventArgs e)
+        {
+                if (EmailText.Visibility == Visibility.Visible)
+                {
+                    EmailText.Visibility = Visibility.Hidden;
+                    EmailLabel.Visibility = Visibility.Visible;
+                    EmailChanged = false;
+                }
+                else
+                {
+                    EmailText.Visibility = Visibility.Visible;
+                    EmailLabel.Visibility = Visibility.Hidden;
+                    EmailText.Text = EmailLabel.Content.ToString();
+                }
         }
     }
 }
