@@ -169,6 +169,7 @@ namespace PasswordManager
                                     else
                                     {
                                         Window2 win2 = new Window2();
+                                        db.Close();
                                         win2.Title = "Error";
                                         win2.Error.Content = "You have entered your OTP incorrectly.\nPlease check your OTP and try again.";
                                         win2.ShowDialog();
@@ -204,6 +205,7 @@ namespace PasswordManager
                                     else
                                     {
                                         Window2 win2 = new Window2();
+                                        db.Close();
                                         win2.Title = "Error";
                                         win2.Error.Content = "You have entered your OTP incorrectly.\nPlease check your OTP and try again.";
                                         win2.ShowDialog();
@@ -237,7 +239,7 @@ namespace PasswordManager
             {
                 Window2 win2 = new Window2();
                 win2.Title = "Error";
-                win2.Error.Content = "You have entered your password or account name incorrectly.\nPlease check your password and account name and try again in 1 minute.";
+                win2.Error.Content = "You have entered your password or account name incorrectly.\nPlease check your password and account name and try again.";
                 win2.ShowDialog();
             }
         }
@@ -259,7 +261,6 @@ namespace PasswordManager
             win6.ShowDialog();
             if (win6.succesfull == true)
             {
-                Console.WriteLine(File.Exists(win6.Login.Text + ".db"));
                 if (File.Exists(win6.Login.Text + ".db"))
                 {
                     Window2 win2 = new Window2();
