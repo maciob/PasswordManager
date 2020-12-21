@@ -6,12 +6,12 @@
         xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:local="clr-namespace:PasswordManager"
         mc:Ignorable="d"
-        Title="Account Editor" Height="234.492" Width="450" ResizeMode="NoResize">
+        Title="Account Editor" Height="294.82" Width="450" ResizeMode="NoResize">
     <Grid>
         <Label Content="Name" HorizontalAlignment="Left" Margin="25,21,0,0" VerticalAlignment="Top"/>
         <Label Content="Password" HorizontalAlignment="Left" Margin="25,62,0,0" VerticalAlignment="Top"/>
-        <Button Content="SAVE" HorizontalAlignment="Left" Margin="103,159,0,0" VerticalAlignment="Top" Width="89" Click="Button_Save"/>
-        <Button Content="Cancel" HorizontalAlignment="Left" Margin="233,159,0,0" VerticalAlignment="Top" Width="90" Click="Button_Cancel"/>
+        <Button Content="SAVE" HorizontalAlignment="Left" Margin="103,217,0,0" VerticalAlignment="Top" Width="89" Click="Button_Save"/>
+        <Button Content="Cancel" HorizontalAlignment="Left" Margin="235,217,0,0" VerticalAlignment="Top" Width="90" Click="Button_Cancel"/>
         <TextBox HorizontalAlignment="Left" Height="22" Margin="103,21,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="195" Name="LoginText" Visibility="Hidden"/>
         <TextBox HorizontalAlignment="Left" Height="23" Margin="103,65,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="222" Name="PasswordText" Visibility="Hidden"/>
         <PasswordBox HorizontalAlignment="Left" Height="23" Margin="103,65,0,0" VerticalAlignment="Top" Width="222" Name="PasswordBox" Visibility="Hidden"/>
@@ -20,9 +20,12 @@
         <Button Content="Change" Margin="386,66,5,0" VerticalAlignment="Top" Height="15" RenderTransformOrigin="0.967,0.722" Click="Button_EditPassword"/>
         <Button Content="Change" Margin="386,25,5,0" VerticalAlignment="Top" Height="15" RenderTransformOrigin="0.967,0.722" Click="Button_EditLogin"/>
         <Button Content="Show" Margin="328,66,63,0" VerticalAlignment="Top" Height="15" RenderTransformOrigin="0.967,0.722" Click="Button_Show"/>
-        <Label Content="Email" HorizontalAlignment="Left" Margin="25,108,0,0" VerticalAlignment="Top"/>
-        <Label Name="EmailLabel" HorizontalAlignment="Left" Height="23" Margin="103,111,0,0" VerticalAlignment="Top" Width="222" />
-        <TextBox HorizontalAlignment="Left" Height="22" Margin="103,111,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="195" Name="EmailText" Visibility="Hidden"/>
-        <Button Content="Change" Margin="386,112,5,0" VerticalAlignment="Top" Height="15" RenderTransformOrigin="0.967,0.722" Click="Button_EditEmail"/>
+        <Label Name="EmailTekst" Content="Email" HorizontalAlignment="Left" Margin="29,165,0,0" VerticalAlignment="Top" Visibility="Hidden"/>
+        <Label Name="EmailLabel" HorizontalAlignment="Left" Height="23" Margin="103,167,0,0" VerticalAlignment="Top" Width="222" Visibility="Hidden"/>
+        <TextBox HorizontalAlignment="Left" Height="22" Margin="103,167,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="195" Name="EmailText" Visibility="Hidden"/>
+        <Button Name="ButtonEmail" Content="Change" Margin="386,165,5,0" VerticalAlignment="Top" Height="15" RenderTransformOrigin="0.967,0.722" Click="Button_EditEmail" Visibility="Hidden"/>
+        <CheckBox Name="TwoFACheck" Content="2FA" HorizontalAlignment="Left" Margin="29,111,0,0" VerticalAlignment="Top" Height="26" Checked="Checked_2FA" Unchecked="Unchecked_2FA"/>
+        <CheckBox Name="EmailCheck" Content="Email" HorizontalAlignment="Left" Margin="156,111,0,0" VerticalAlignment="Top" Height="26" Checked="Checked_Email" Unchecked="Unchecked_Email" Visibility="Hidden"/>
+        <CheckBox Name="GoogleCheck" Content="Google Authenticator" HorizontalAlignment="Left" Margin="296,111,0,0" VerticalAlignment="Top" Height="26" Visibility="Hidden"/>
     </Grid>
 </mah:MetroWindow>

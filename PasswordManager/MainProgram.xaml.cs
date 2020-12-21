@@ -21,7 +21,7 @@ using MahApps.Metro.Controls;
 using System.Windows.Threading;
 using System.Windows.Navigation;
 using System.Web.UI.WebControls;
-using System.Data.SqlClient;
+using System.Net;
 
 namespace PasswordManager
 {
@@ -43,6 +43,10 @@ namespace PasswordManager
         int time_ammount = 300;
         TimeSpan time;
         DispatcherTimer timer;
+
+        DispatcherTimer timer1;
+        GoogleTOTP tp;
+        private long lastInterval;
 
         public ObservableCollection<WebsiteExpanded> Data { get; set; } = new ObservableCollection<WebsiteExpanded>();
 
@@ -93,6 +97,12 @@ namespace PasswordManager
                 }
                 time = time.Add(TimeSpan.FromSeconds(-1));
             }, Application.Current.Dispatcher);
+
+
+            tp = new GoogleTOTP();
+            timer1 = new DispatcherTimer();
+            timer1.Start();
+            timer1.Tick += new EventHandler(timer1_Tick);
         }
 
         ~Window1() { }
@@ -447,10 +457,25 @@ namespace PasswordManager
 
         private void AccountSettings_Click(object sender, RoutedEventArgs e)
         {
-            Window8 win8 = new Window8(login, password, Email);
+            var db = new SQLiteConnection(login);
+            var query = db.Table<DataStructures.Account>();
+            bool flag2FA = false;
+            bool flagGoogle = false;
+            bool flagEmail = false;
+
+            foreach (var a in query) 
+            {
+                if (a.Email != ""|| a.Code!= "") flag2FA = true;
+                if (a.Code != "") flagGoogle = true;
+                if (a.Email != "") flagEmail = true;
+            }
+            db.Close();
+            Window8 win8 = new Window8(login, password, Email, flag2FA, flagEmail, flagGoogle);
+            
             win8.ShowDialog();
             if (win8.succesfull == true)
             {
+                Console.WriteLine("7");
                 if (win8.LoginChanged == true)
                 {
                     changedFlag = false;
@@ -462,7 +487,6 @@ namespace PasswordManager
                             try
                             {
                                 File.Move(login, win8.LoginText.Text + ".db");
-                                //File.Delete(login);
                                 login = win8.LoginText.Text + ".db";
                                 Account.Content = win8.LoginText.Text;
                             }
@@ -472,21 +496,29 @@ namespace PasswordManager
                 }
                 System.Threading.Thread.Sleep(1000);
                 changedFlag = false;
-                var db = new SQLiteConnection(login);
-                var query = db.Table<DataStructures.Account>();
+
+                db = new SQLiteConnection(login);
+                query = db.Table<DataStructures.Account>();
                 foreach (var account in query)
                 {
                     if (win8.PasswordChanged == true)
                     {
-                        
+                        Console.WriteLine("8");
                         db.Execute("UPDATE Account SET Password = ? WHERE Password = ?",
                             AES.Encrypt(win8.PasswordBox.Password.ToString(), win8.PasswordBox.Password.ToString(), "PasswordManager"),
                             account.Password
                         );
+
                         db.Execute("UPDATE Account SET Email = ? WHERE Email = ?",
                            AES.Encrypt(Email, win8.PasswordBox.Password.ToString(), "PasswordManager"),
-                           account.Password
+                           account.Email
                         );
+
+                        db.Execute("UPDATE Account SET Code = ? WHERE Code = ?",
+                            AES.Encrypt(AES.Decrypt(account.Code,password.Password.ToString(), "PasswordManager"), win8.PasswordBox.Password.ToString(), "PasswordManager"),
+                            account.Code
+                        );
+
                         var query2 = db.Table<DataStructures.Backup>();
 
                         foreach (var version in query2)
@@ -511,16 +543,70 @@ namespace PasswordManager
                             }
                         }
                     }
-
-                    if (win8.EmailChanged == true)
+                    
+                    if (win8.outEmail == true && win8.EmailChanged == true)
                     {
+                        Console.WriteLine("9");
                         db.Execute("UPDATE Account SET Email = ? WHERE Email = ?",
                             AES.Encrypt(win8.EmailText.Text, password.Password.ToString(), "PasswordManager"),
                             account.Email
                         );
                         Email = win8.EmailText.Text;
+                        changedFlag = true;
                     }
 
+                    if (win8.outEmail == false && win8.EmailChanged == true)
+                    {
+                        Console.WriteLine("10");
+                        db.Execute("UPDATE Account SET Email = ? WHERE Email = ?",
+                            "",
+                            account.Email
+                        );
+                        Email = "";
+                    }
+
+                    if (win8.outGoogle == true && win8.GoogleFAChanged == true)
+                    {
+                        Console.WriteLine("11");
+                        Window10 win10 = new Window10();
+                        string randomString = Transcoder.Base32Encode(tp.randomBytes);
+                        
+                        string ProvisionUrl = tp.UrlEncode(String.Format("otpauth://totp/{0}?secret={1}", "PasswordManager", randomString));
+                        string url = String.Format("http://chart.apis.google.com/chart?cht=qr&chs={0}x{1}&chl={2}", 200, 200, ProvisionUrl);
+
+                        WebClient wc = new WebClient();
+                        var data = wc.DownloadData(url);
+
+                        BitmapImage bitmap = new BitmapImage();
+                        bitmap.BeginInit();
+                        bitmap.StreamSource = new MemoryStream(data);
+                        bitmap.EndInit();
+                        win10.QRcode.Source = bitmap;
+                        win10.CodeLabel.Content = "Your code:\n " + tp.getPrivateKey(tp.randomBytes);
+                        win10.ShowDialog();
+
+                        string builder = "";
+                        foreach (byte b in tp.randomBytes)
+                        {
+                            builder = builder + b + " ";
+                        }
+
+                        db.Execute("UPDATE Account SET Code = ? WHERE Code = ?",
+                            AES.Encrypt(builder, password.Password.ToString(), "PasswordManager"),
+                            account.Code
+                        );
+                        changedFlag = true;
+                    }
+
+                    if (win8.outGoogle == false && win8.GoogleFAChanged == true) 
+                    {
+                        Console.WriteLine("12");
+                        db.Execute("UPDATE Account SET Code = ? WHERE Code = ?",
+                            "",
+                            account.Code
+                        ); 
+                    }
+                    
                     db.Close();
                     
                     if (changedFlag == true) 
@@ -608,5 +694,13 @@ namespace PasswordManager
             return isSQLInjection;
         }
 
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            long thisInterval = tp.getCurrentInterval();
+            if (lastInterval != thisInterval)
+            {
+                lastInterval = thisInterval;
+            }
+        }
     }
 }

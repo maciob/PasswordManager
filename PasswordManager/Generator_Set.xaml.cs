@@ -39,5 +39,10 @@ namespace PasswordManager
             succesfull = false;
             this.Close();
         }
+
+        private void Textbox_KeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = (e.Key < Key.D0 || e.Key > Key.D9) && (e.Key < Key.NumPad0 || e.Key > Key.NumPad9);
+        }
     }
 }

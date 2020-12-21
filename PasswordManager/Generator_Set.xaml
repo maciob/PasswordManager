@@ -6,7 +6,8 @@
         xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:local="clr-namespace:PasswordManager"
         mc:Ignorable="d"
-        Title="Generator Settings" Height="300" Width="300" ResizeMode="NoResize">
+        Title="Generator Settings" Height="300" Width="300" ResizeMode="NoResize"
+        KeyDown="Textbox_KeyDown">
     <Grid>
         <GroupBox Header="Settings of password generator">
             <Grid>
