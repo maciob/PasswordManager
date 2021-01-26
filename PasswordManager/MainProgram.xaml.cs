@@ -160,58 +160,6 @@ namespace PasswordManager
             }
             db.Close();
 
-
-            /*
-            if (checkForSQLInjection(login) == false && checkForSQLInjection(password.Password.ToString()) == false)
-            {
-                using (StreamWriter sw = con.StandardInput)
-                {
-                    if (sw.BaseStream.CanWrite)
-                    {
-                        sw.WriteLine("sqlite3 {0}", login);
-                        sw.WriteLine("PRAGMA key = '{0}';", password.Password.ToString());
-                        sw.WriteLine("SELECT * FROM Website;");
-                        sw.WriteLine(".quit");
-                    }
-                }
-                string result = con.StandardOutput.ReadToEnd();
-                var Lines = result.Split('\n');
-                foreach (var line in Lines)
-                {
-                    Console.WriteLine(line);
-                    var s = line.Split('|');
-                    if (Char.IsNumber(s[0], 0))
-                    {
-                        var element = new DataStructures.WebsiteExpanded
-                        {
-                            ID = Int32.Parse(s[0]),
-                            Website_name = s[1],
-                            Website_address = s[2],
-                            Login = s[3],
-                            Password = s[4],
-                            Date = s[5]
-                        };
-                        string path = element.Website_address;
-                        path = CharStrip(path);
-                        if (File.Exists(path))
-                        {
-                            BitmapImage bitmap = new BitmapImage();
-                            bitmap.BeginInit();
-                            bitmap.UriSource = new Uri(path);
-                            bitmap.EndInit();
-                            element.ImageSource = bitmap;
-                        }
-                        Data.Add(element);
-                    }
-                }
-            }
-            else
-            {
-                Window2 win2 = new Window2();
-                win2.Title = "Error";
-                win2.Error.Content = "Are you trying out SQLInjection?";
-                win2.ShowDialog();
-            }*/
         }
 
         private string CharStrip(string URL) 
@@ -300,27 +248,6 @@ namespace PasswordManager
             Data.Clear();
             Read();
             db.Close();
-            /*var con = Connect();
-            if (checkForSQLInjection(Name) == false && checkForSQLInjection(WebsiteName) == false && checkForSQLInjection(Login) == false && checkForSQLInjection(new_password) == false)
-            {
-                using (StreamWriter sw = con.StandardInput)
-                {
-                    if (sw.BaseStream.CanWrite)
-                    {
-                        sw.WriteLine("sqlite3 {0}", login);
-                        sw.WriteLine("PRAGMA key = '{0}';", password.Password.ToString());
-                        sw.WriteLine("INSERT INTO Website( Website_name , Website_address , Login , Password , Date ) VALUES('{0}','{1}','{2}','{3}','{4}');", Name, WebsiteName, Login, new_password, date);
-                        sw.WriteLine(".quit");
-                    }
-                }
-            }
-            else 
-            {
-                Window2 win2 = new Window2();
-                win2.Title = "Error";
-                win2.Error.Content = "Are you trying out SQLInjection? Try again.";
-                win2.ShowDialog();
-            }*/
         }
 
         private void Edit(object sender, RoutedEventArgs e)
@@ -475,7 +402,6 @@ namespace PasswordManager
             win8.ShowDialog();
             if (win8.succesfull == true)
             {
-                Console.WriteLine("7");
                 if (win8.LoginChanged == true)
                 {
                     changedFlag = false;
@@ -490,7 +416,9 @@ namespace PasswordManager
                                 login = win8.LoginText.Text + ".db";
                                 Account.Content = win8.LoginText.Text;
                             }
-                            catch (Exception ex) { }
+                            catch (Exception ex) 
+                            { 
+                            }
                         }
                     }
                 }
@@ -503,7 +431,6 @@ namespace PasswordManager
                 {
                     if (win8.PasswordChanged == true)
                     {
-                        Console.WriteLine("8");
                         db.Execute("UPDATE Account SET Password = ? WHERE Password = ?",
                             AES.Encrypt(win8.PasswordBox.Password.ToString(), win8.PasswordBox.Password.ToString(), "PasswordManager"),
                             account.Password
@@ -546,7 +473,6 @@ namespace PasswordManager
                     
                     if (win8.outEmail == true && win8.EmailChanged == true)
                     {
-                        Console.WriteLine("9");
                         db.Execute("UPDATE Account SET Email = ? WHERE Email = ?",
                             AES.Encrypt(win8.EmailText.Text, password.Password.ToString(), "PasswordManager"),
                             account.Email
@@ -557,7 +483,6 @@ namespace PasswordManager
 
                     if (win8.outEmail == false && win8.EmailChanged == true)
                     {
-                        Console.WriteLine("10");
                         db.Execute("UPDATE Account SET Email = ? WHERE Email = ?",
                             "",
                             account.Email
@@ -567,7 +492,6 @@ namespace PasswordManager
 
                     if (win8.outGoogle == true && win8.GoogleFAChanged == true)
                     {
-                        Console.WriteLine("11");
                         Window10 win10 = new Window10();
                         string randomString = Transcoder.Base32Encode(tp.randomBytes);
                         
@@ -600,7 +524,6 @@ namespace PasswordManager
 
                     if (win8.outGoogle == false && win8.GoogleFAChanged == true) 
                     {
-                        Console.WriteLine("12");
                         db.Execute("UPDATE Account SET Code = ? WHERE Code = ?",
                             "",
                             account.Code

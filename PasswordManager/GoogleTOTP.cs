@@ -59,6 +59,7 @@ namespace PasswordManager
 			myHmac.ComputeHash(value);
 			byte[] hash = myHmac.Hash;
 			int offset = hash[hash.Length - 1] & 0xF;
+
 			byte[] SelectedFourBytes = new byte[4];
 			SelectedFourBytes[0] = hash[offset];
 			SelectedFourBytes[1] = hash[offset + 1];
@@ -66,6 +67,7 @@ namespace PasswordManager
 			SelectedFourBytes[3] = hash[offset + 3];
 			Array.Reverse(SelectedFourBytes);
 			int finalInt = BitConverter.ToInt32(SelectedFourBytes, 0);
+
 			int truncatedHash = finalInt & 0x7FFFFFFF; 
 			int pinValue = truncatedHash % pinModulo; 
 			return padOutput(pinValue);

@@ -309,7 +309,7 @@ namespace PasswordManager
                     {
                         Password = AES.Encrypt(win6.Password_Box.Password.ToString(), win6.Password_Box.Password.ToString(), "PasswordManager"),
                         Email = AES.Encrypt(win6.Email.Text, win6.Password_Box.Password.ToString(), "PasswordManager"),
-                        Code = AES.Encrypt(builder, win6.Password_Box.Password.ToString(), "PasswordManager"),
+                        Code = AES.Encrypt(builder, win6.Password_Box.Password.ToString(), "PasswordManager")
                     };
                     DataStructures.Backup backup = new DataStructures.Backup
                     {
