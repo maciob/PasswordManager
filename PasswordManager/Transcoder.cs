@@ -20,9 +20,8 @@ namespace PasswordManager
 
 			while (i < data.Length)
 			{
-				current_byte = (data[i] >= 0) ? data[i] : (data[i] + 256); // Unsign
+				current_byte = (data[i] >= 0) ? data[i] : (data[i] + 256);
 
-				/* Is the current digit going to span a byte boundary? */
 				if (index > (IN_BYTE_SIZE - OUT_BYTE_SIZE))
 				{
 					if ((i + 1) < data.Length)
